@@ -14,7 +14,7 @@ def hydro(r,y,*args): # hydrostatic equilibrium
 	m = y[props.index('M')] # m in units of cm*c^2/G
 	mu = args[0] # mu in units of g/cm^3
 	
-	return -G*(mu(p)+p)*(m+4.*np.pi*r**3*p)/(c**2*r**2*(1.-2.*G*m/(c**2*r)))
+	return -G * (mu(p)+p)*(m + 4.*np.pi*r**3*p) / (c**2*r**2*(1.-2.*G*m/(c**2*r)))
 		
 def mass(r,y,*args): # definition of the mass
 	

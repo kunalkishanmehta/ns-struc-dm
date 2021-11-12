@@ -12,10 +12,27 @@ def hydro(r,y,*args): # hydrostatic equilibrium
 
 	p = y[props.index('R')] # p in units of g/cm^3
 	m = y[props.index('M')] # m in units of cm*c^2/G
+	pdm = y[props.index('Rdm')] # pdm in units of g/cm^3
+	mdm = y[props.index('Mdm')]# mdm in units of cm*c^2/G
 	mu = args[0] # mu in units of g/cm^3
 	
-	return -G * (mu(p)+p)*(m + 4.*np.pi*r**3*p) / (c**2*r**2*(1.-2.*G*m/(c**2*r)))
+	return -G * (mu(p)+p)*((m+mdm) + 4.*np.pi*r**3*(p+pdm)) / (c**2*r**2*(1.-2.*G*(m+mdm)/(c**2*r)))
 		
+
+def hydrodm(r,y,*args ): # hydrostatic equilibrium
+
+	props = args[-1] # args expected as mu(p),1/cs2(p),rho(p), mudm(pdm)??, rhodm, props
+
+	p = y[props.index('R')] # p in units of g/cm^3
+	m = y[props.index('M')] # m in units of cm*c^2/G
+	pdm = y[props.index('Rdm')] # pdm in units of g/cm^3
+	mdm = y[props.index('Mdm')]# mdm in units of cm*c^2/G
+	mu = args[0] # mu in units of g/cm^3
+	mudm = args[3]
+	
+	return -G * (mudm(pdm)+p)*((m+mdm) + 4.*np.pi*r**3*(p+pdm)) / (c**2*r**2*(1.-2.*G*(m+mdm)/(c**2*r)))
+
+	
 def mass(r,y,*args): # definition of the mass
 	
 	props = args[-1]
@@ -24,6 +41,17 @@ def mass(r,y,*args): # definition of the mass
 	mu = args[0] # mu in units of g/cm^3	
 		
 	return 4.*np.pi*r**2*mu(p) 
+
+def massdm(r,y,*args, mudm,pdm): # definition of the mass
+	
+	props = args[-1]
+	
+	p = y[props.index('R')] # p in units of g/cm^3
+	pdm = y[props.index('Rdm')] # pdm in units of g/cm^3
+	mu = args[0] # mu in units of g/cm^3	
+	mudm = args[3]
+		
+	return 4.*np.pi*r**2*mudm(pdm) 
 	
 def baryonmass(r,y,*args): # definition of the baryonic mass
 	
@@ -31,12 +59,29 @@ def baryonmass(r,y,*args): # definition of the baryonic mass
 	
 	p = y[props.index('R')] # p in units of g/cm^3
 	m = y[props.index('M')] # m in units of cm*c^2/G
+	mdm = y[props.index('Mdm')]# mdm in units of cm*c^2/G
 	rho = args[2] # rho in units of g/cm^3	
 	
-	f = 1.-2.*G*m/(c**2*r)
+	f = 1.-2.*G*(m+mdm)/(c**2*r)
 		
 	return 4.*np.pi*r**2*rho(p)/f**0.5 
 	
+	
+def dmmass(r,y,*args): # definition of the dark matter mass
+	
+	props = args[-1]
+	
+	p = y[props.index('R')] # p in units of g/cm^3
+	pdm = y[props.index('Rdm')] # pdm in units of g/cm^3
+	m = y[props.index('M')] # m in units of cm*c^2/G
+	mdm = y[props.index('Mdm')]# mdm in units of cm*c^2/G
+	rho = args[2] # rho in units of g/cm^3	
+	rhodm = args[4]
+	
+	f = 1.-2.*G*(m+mdm)/(c**2*r)
+		
+	return 4.*np.pi*r**2*rhodm(pdm)/f**0.5 
+
 def equad(r,y,*args): # gravitoelectric quadrupole tidal perturbation
 	
 	props = args[-1]
@@ -69,7 +114,7 @@ def slowrot(r,y,*args): # slow rotation equation
 
 def eqsdict(): # dictionary linking NS properties with corresponding equation of stellar structure
 
-	return {'R': hydro,'M': mass,'Lambda': equad,'I': slowrot,'Mb': baryonmass}
+	return {'R': hydro,'M': mass,'Lambda': equad,'I': slowrot,'Mb': baryonmass, 'Rdm': hydrodm}, 'Mdm', massdm, 'Md', dmmass
 
 # INITIAL CONDITIONS
 
@@ -80,6 +125,10 @@ def initconds(pc,muc,cs2ic,rhoc,stp,props): # initial conditions for integration
 	Lambdac = 2.+4.*np.pi*G*stp**2*(9.*pc+13.*muc+3.*(pc+muc)*cs2ic)/(21.*c**2)
 	omegac = 0.+16.*np.pi*G*stp**2*(pc+muc)/(5.*c**2)
 	mbc = 4.*np.pi*stp**3*rhoc/3.
+	
+	Pcdm = pc - twopi * G_c2 * initial_r**2 * (pc + epsc) * (3.*pc + epsc) / 3.
+    	mcdm = fourpi * initial_r**3 * epsc / 3.
+    	dmmc = fourpi * initial_r**3 * rhoc / 3.
 	
 	return {'R': Pc,'M': mc,'Lambda': Lambdac,'I': omegac, 'Mb': mc}
 

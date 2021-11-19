@@ -15,6 +15,8 @@ parser = OptionParser(usage=__usage__, description=__doc__)
 parser.add_option('-p', '--props', default='R,M,Lambda', help='comma-separated list of NS properties to calculate, DEFAULT=R,M,Lambda', metavar='R,M,Lambda')
 parser.add_option('-n', '--numrhoc', default=2e2, help='number of central densities to sample per EoS, DEFAULT=200', metavar='2e2')
 parser.add_option('-r', '--rhorng', default='0.8,1.2e1', help='comma-separated min and max values for central density in units of rhonuc, DEFAULT=0.8,1.2e1', metavar='0.8,1.2e1')
+parser.add_option('-R', '--rhodm', default='1', help='central dark matter density in units of rhonuc, DEFAULT=1', metavar='1')
+
 parser.add_option('-s', '--stpi', default=1e1, help='starting step size for radial TOV integration in cm, DEFAULT=1e1', metavar='1e1')
 parser.add_option('-N', '--numpts', default=2e3, help='number of points for radial TOV integration, DEFAULT=2e3', metavar='2e3')
 parser.add_option('-m', '--maxr', default=2e6, help='radius endpoint in cm for surface finding algorithm, DEFAULT=2e6', metavar='2e6')
@@ -29,6 +31,7 @@ eosnames = str(args[0]).split(',')
 props = str(opts.props).split(',')
 numprops = len(props)
 rhorng = str(opts.rhorng).split(',')
+rhocdm = float(opts.rhodm)
 rhoi, rhof = [float(rho) for rho in rhorng]
 numrhoc = int(float(opts.numrhoc))
 stp = float(opts.stpi)
@@ -76,8 +79,8 @@ for eosname in eosnames:
 	if verb == True: print 'Start at central density {0} g/cm^3'.format(rhocs[0])
 	for rhoc in rhocs: # compute macroscopic properties for star of each central density
 	
-		macro = tov([mu,P,cs2i,Rho],rhoc,props,stp,numpts,maxr,tol)
-		properties[i] = [item for List in [[rhoc],macro] for item in List]
+		macro = tov([mu,P,cs2i,Rho],rhoc, rhocdm, props,stp,numpts,maxr,tol)
+		properties[i] = [item for List in [[rhoc, rhocdm],macro] for item in List]
 		i = i+1
 
 	if verb == True: print 'Done at central density {0} g/cm^3\nSave to '.format(rhocs[-1])+outdir+tag+shortname+'.csv'

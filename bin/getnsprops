@@ -9,7 +9,7 @@ from optparse import OptionParser
 from scipy.interpolate import interp1d
 from nsstruc.tov import tov
 from nsstruc.constants import *
-from nsstruc.pltsetup import *
+# from nsstruc.pltsetup import *
 
 parser = OptionParser(usage=__usage__, description=__doc__)
 parser.add_option('-p', '--props', default='R,M,Lambda', help='comma-separated list of NS properties to calculate, DEFAULT=R,M,Lambda', metavar='R,M,Lambda')

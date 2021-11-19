@@ -80,7 +80,7 @@ for eosname in eosnames:
 	for rhoc in rhocs: # compute macroscopic properties for star of each central density
 	
 		macro = tov([mu,P,cs2i,Rho],rhoc, rhocdm, props,stp,numpts,maxr,tol)
-		properties[i] = [item for List in [[rhoc, rhocdm],macro] for item in List]
+		properties[i] = [item for List in [[rhoc], [rhocdm],macro] for item in List]
 		i = i+1
 
 	if verb == True: print 'Done at central density {0} g/cm^3\nSave to '.format(rhocs[-1])+outdir+tag+shortname+'.csv'

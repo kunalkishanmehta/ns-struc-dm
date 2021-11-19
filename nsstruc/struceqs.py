@@ -117,7 +117,7 @@ def eqsdict(): # dictionary linking NS properties with corresponding equation of
 
 # INITIAL CONDITIONS
 
-def initconds(pc,muc,cs2ic,rhoc,stp,props): # initial conditions for integration of eqs of stellar structure
+def initconds(pc,pcdm,muc,mucdm, cs2ic,rhoc,rhocdm, stp,props): # initial conditions for integration of eqs of stellar structure
 
 	Pc = pc - 2.*np.pi*G*stp**2*(pc+muc)*(3.*pc+muc)/(3.*c**2)
 	mc = 4.*np.pi*stp**3*muc/3.

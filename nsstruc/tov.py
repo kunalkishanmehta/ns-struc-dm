@@ -8,7 +8,7 @@ from .constants import *
 
 # INTERPOLATE CONTINUOUS FLUID VARIABLES FROM DISCRETE EOS DATA
 
-def tov(eospath,rhoc,props=['R','M','Lambda'],stp=1e1,pts=2e3,maxr=2e6,tol=1e1):
+def tov(eospath,rhoc, rhocdm ,props=['R','M','Lambda'],stp=1e1,pts=2e3,maxr=2e6,tol=1e1):
 
 	pts = int(pts)
 	eqs = eqsdict() # associate NS properties with corresponding equation of stellar structure
@@ -42,8 +42,12 @@ def tov(eospath,rhoc,props=['R','M','Lambda'],stp=1e1,pts=2e3,maxr=2e6,tol=1e1):
 
 	pc = float(P(rhoc)) # central pressure from interpolated p(rho) function
 	muc = mu(pc) # central energy density from interpolated mu(p) function
+	
+	pcdm = float(P(rhocdm))
+	mucdm = mu(pcdm)
+	
 	cs2ic = cs2i(pc) # central sound speed from interpolated cs2i(p) function
-	startvals = initconds(pc,muc,cs2ic,rhoc,stp,props) # load BCs at center of star for integration
+	startvals = initconds(pc,pcdm, muc,mucdm,cs2ic,rhoc,rhocdm,stp,props) # load BCs at center of star for integration
 	y0 = [startvals[prop] for prop in props]
 	
 	res = ode(efe)

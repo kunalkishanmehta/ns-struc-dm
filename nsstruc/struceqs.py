@@ -28,9 +28,9 @@ def hydrodm(r,y,*args ): # hydrostatic equilibrium
 	pdm = y[props.index('Rdm')] # pdm in units of g/cm^3
 	mdm = y[props.index('Mdm')]# mdm in units of cm*c^2/G
 	mu = args[0] # mu in units of g/cm^3
-	mudm = args[3]
 	
-	return -G * (mudm(pdm)+p)*((m+mdm) + 4.*np.pi*r**3*(p+pdm)) / (c**2*r**2*(1.-2.*G*(m+mdm)/(c**2*r)))
+	
+	return -G * (mu(pdm)+p)*((m+mdm) + 4.*np.pi*r**3*(p+pdm)) / (c**2*r**2*(1.-2.*G*(m+mdm)/(c**2*r)))
 
 	
 def mass(r,y,*args): # definition of the mass
@@ -42,16 +42,16 @@ def mass(r,y,*args): # definition of the mass
 		
 	return 4.*np.pi*r**2*mu(p) 
 
-def massdm(r,y,*args, mudm,pdm): # definition of the mass
+def massdm(r,y,*args): # definition of the mass
 	
 	props = args[-1]
 	
 	p = y[props.index('R')] # p in units of g/cm^3
 	pdm = y[props.index('Rdm')] # pdm in units of g/cm^3
 	mu = args[0] # mu in units of g/cm^3	
-	mudm = args[3]
+	
 		
-	return 4.*np.pi*r**2*mudm(pdm) 
+	return 4.*np.pi*r**2*mu(pdm) 
 	
 def baryonmass(r,y,*args): # definition of the baryonic mass
 	
@@ -76,11 +76,10 @@ def dmmass(r,y,*args): # definition of the dark matter mass
 	m = y[props.index('M')] # m in units of cm*c^2/G
 	mdm = y[props.index('Mdm')]# mdm in units of cm*c^2/G
 	rho = args[2] # rho in units of g/cm^3	
-	rhodm = args[4]
 	
 	f = 1.-2.*G*(m+mdm)/(c**2*r)
 		
-	return 4.*np.pi*r**2*rhodm(pdm)/f**0.5 
+	return 4.*np.pi*r**2*rho(pdm)/f**0.5 
 
 def equad(r,y,*args): # gravitoelectric quadrupole tidal perturbation
 	
@@ -114,7 +113,7 @@ def slowrot(r,y,*args): # slow rotation equation
 
 def eqsdict(): # dictionary linking NS properties with corresponding equation of stellar structure
 
-	return {'R': hydro,'M': mass,'Lambda': equad,'I': slowrot,'Mb': baryonmass, 'Rdm': hydrodm}, 'Mdm', massdm, 'Md', dmmass
+	return {'R': hydro,'M': mass,'Lambda': equad,'I': slowrot,'Mb': baryonmass, 'Rdm': hydrodm, 'Mdm': massdm, 'Md': dmmass}
 
 # INITIAL CONDITIONS
 
@@ -126,11 +125,11 @@ def initconds(pc,muc,cs2ic,rhoc,stp,props): # initial conditions for integration
 	omegac = 0.+16.*np.pi*G*stp**2*(pc+muc)/(5.*c**2)
 	mbc = 4.*np.pi*stp**3*rhoc/3.
 	
-	Pcdm = pc - twopi * G_c2 * initial_r**2 * (pc + epsc) * (3.*pc + epsc) / 3.
-    	mcdm = fourpi * initial_r**3 * epsc / 3.
-    	dmmc = fourpi * initial_r**3 * rhoc / 3.
+	Pcdm = pcdm - 2.*np.pi*G*stp**2*(pcdm+mucdm)*(3.*pcdm+mucdm)/(3.*c**2)
+    	mcdm = 4.*np.pi*stp**3*mucdm/3.
+    	dmmc = 4.*np.pi * stp**3 * rhocdm / 3.
 	
-	return {'R': Pc,'M': mc,'Lambda': Lambdac,'I': omegac, 'Mb': mc}
+	return {'R': Pc,'M': mc,'Lambda': Lambdac,'I': omegac, 'Mb': mbc,'Rdm': Pcdm, 'Mdm': mcdm, 'Md': dmmc }
 
 # SURFACE VALUES
 
@@ -144,15 +143,35 @@ def calcobs(vals,props): # calculate NS properties at stellar surface in desired
 		
 	def MMsun(vals): # M in Msun
 	
-		M = vals[props.index('M')+1]
+		M = vals[props.index('M')+2]
 	
 		return M/Msun
 		
 	def MbMsun(vals): # M in Msun
 	
-		Mb = vals[props.index('Mb')+1]
+		Mb = vals[props.index('Mb')+2]
 	
 		return Mb/Msun
+	
+	#dm versions
+	
+	def Rdmkm(vals): # R in km
+	
+		R = vals[1]
+	
+		return R/1e5
+		
+	def MdmMsun(vals): # M in Msun
+	
+		M = vals[props.index('Mdm')+2]
+	
+		return M/Msun
+		
+	def MdMsun(vals): # M in Msun
+	
+		Md = vals[props.index('Md')+2]
+	
+		return Md/Msun
 		
 	def Lambda1(vals): # dimensionless tidal deformability
 	
@@ -181,4 +200,4 @@ def calcobs(vals,props): # calculate NS properties at stellar surface in desired
 	
 		return 1e-45*(omegaR/(3.+omegaR))*c**2*vals[0]**3/(2.*G) # MoI in 10^45 g cm^2
 
-	return {'R': Rkm,'M': MMsun,'Lambda': Lambda1,'I': MoI, 'Mb': MbMsun}	
+	return {'R': Rkm,'M': MMsun,'Lambda': Lambda1,'I': MoI, 'Mb': MbMsun, 'Rdm': Rdmkm,'Mdm': MdmMsun, 'Md': MdMsun}	

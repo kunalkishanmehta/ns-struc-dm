@@ -72,7 +72,7 @@ for eosname in eosnames:
 	def cs2i(p): return cs2pi(p) # 1/sound speed squared
 	
 	rhocs = np.linspace(max(rhoi*rhonuc,rhodat[0]),min(rhof*rhonuc,rhodat[-1]),numrhoc)
-	rhocdms = [rhodm*rhonuc]
+	rhocdms = [rhocdm*rhonuc]
 	
 	properties = np.zeros((numrhoc,numprops+2))
 	

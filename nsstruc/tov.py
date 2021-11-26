@@ -58,7 +58,7 @@ def tov(eospath,rhoc, rhocdm ,props=['R','M','Lambda'],stp=1e1,pts=2e3,maxr=2e6,
 	i=-1
 	dm_radius = 0
 	
-	while res.successful() and i < pts-1: # and res.y[props.index('R')] >= tol and i < pts-1: # stop integration when pressure vanishes (to within tolerance tol)
+	while res.successful() and i < pts-1 and res.y[props.index('R')] >= tol and res.y[props.index('Rdm')] >= tol: # stop integration when pressure vanishes (to within tolerance tol)
 # 		if res.y[props.index('Rdm')]<tol and dm_radius == 0:
 # 			dm_radius = res.t
 		i = i+1
@@ -66,9 +66,34 @@ def tov(eospath,rhoc, rhocdm ,props=['R','M','Lambda'],stp=1e1,pts=2e3,maxr=2e6,
 #		sols[0,i] = res.t	# r values		# UNCOMMENT TO STORE FULL SOLS
 #		sols[1:,i] = res.y	# p, m + other values
 		
+	if res.y[props.index('R')] <= tol:
+		#continue integration of dm variables with baryon pressuer = 0.
+		baryon_radius = res.t
+		baryon_mass = res.y[props.index('M')
+		
+		while res.succesful() and i < pts-1 and res.y[props.index('Rdm')] >= tol:
+			i = i+1
+			res.integrate(res.t+dt)	
+			res.y[props.index('R')] =0
+			res.y[props.index('M')] = baryon_mass	     
+		dm_radius = res.t
+		
+	else res.y[props.index('Rdm')] <= tol:
+		#continue integration of baryon variables with dm pressure  =0
+		dm_radius = res.t
+		dm_mass = res.y[props.index('Mdm')
+		
+		while res.succesful() and i < pts-1 and res.y[props.index('R')] >= tol:
+			i = i+1
+			res.integrate(res.t+dt)	
+			res.y[props.index('Rdm')] =0
+			res.y[props.index('Mdm')] = dm_mass
+				
+		bayon_radius = res.t
+		
 #	vals = [sols[j,i] for j in range(len(props)+1)] # surface values of R, p, M, etc.
 # 	vals = [res.t, res.t, dm_radius] + list(res.y)
-	vals = [res.t, res.t] + list(res.y)
+	vals = [baryon_radius, dm_radius] + list(res.y)
 	
 # CALCULATE NS PROPERTIES AT SURFACE
 	

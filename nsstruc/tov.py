@@ -58,16 +58,17 @@ def tov(eospath,rhoc, rhocdm ,props=['R','M','Lambda'],stp=1e1,pts=2e3,maxr=2e6,
 	i=-1
 	dm_radius = 0
 	
-	while res.successful() and res.y[props.index('R')] >= tol and i < pts-1: # stop integration when pressure vanishes (to within tolerance tol)
-		if res.y[props.index('Rdm')] < tol and dm_radius == 0:
-			dm_radius = res.t
+	while res.successful() and i < pts-1: # and res.y[props.index('R')] >= tol and i < pts-1: # stop integration when pressure vanishes (to within tolerance tol)
+# 		if res.y[props.index('Rdm')]<tol and dm_radius == 0:
+# 			dm_radius = res.t
 		i = i+1
 		res.integrate(res.t+dt)
 #		sols[0,i] = res.t	# r values		# UNCOMMENT TO STORE FULL SOLS
 #		sols[1:,i] = res.y	# p, m + other values
 		
 #	vals = [sols[j,i] for j in range(len(props)+1)] # surface values of R, p, M, etc.
-	vals = [res.t, dm_radius] + list(res.y)
+# 	vals = [res.t, res.t, dm_radius] + list(res.y)
+	vals = [res.t, res.t] + list(res.y)
 	
 # CALCULATE NS PROPERTIES AT SURFACE
 	

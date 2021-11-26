@@ -78,7 +78,7 @@ def tov(eospath,rhoc, rhocdm ,props=['R','M','Lambda'],stp=1e1,pts=2e3,maxr=2e6,
 			res.y[props.index('M')] = baryon_mass	     
 		dm_radius = res.t
 		
-	else res.y[props.index('Rdm')] <= tol:
+	elif res.y[props.index('Rdm')] <= tol:
 		#continue integration of baryon variables with dm pressure  =0
 		dm_radius = res.t
 		dm_mass = res.y[props.index('Mdm')]

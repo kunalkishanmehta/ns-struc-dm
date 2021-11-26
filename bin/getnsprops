@@ -72,6 +72,7 @@ for eosname in eosnames:
 	def cs2i(p): return cs2pi(p) # 1/sound speed squared
 	
 	rhocs = np.linspace(max(rhoi*rhonuc,rhodat[0]),min(rhof*rhonuc,rhodat[-1]),numrhoc)
+	rhocdms = [rhodm*rhonuc]
 	
 	properties = np.zeros((numrhoc,numprops+2))
 	
@@ -79,8 +80,8 @@ for eosname in eosnames:
 	if verb == True: print 'Start at central density {0} g/cm^3'.format(rhocs[0])
 	for rhoc in rhocs: # compute macroscopic properties for star of each central density
 	
-		macro = tov([mu,P,cs2i,Rho],rhoc, rhocdm, props,stp,numpts,maxr,tol)
-		properties[i] = [item for List in [[rhoc],[rhocdm],macro] for item in List] #FIXME
+		macro = tov([mu,P,cs2i,Rho],rhoc, rhocdms[0], props,stp,numpts,maxr,tol)
+		properties[i] = [item for List in [[rhoc],[rhocdm[0]],macro] for item in List] #FIXME
 		i = i+1
 
 	if verb == True: print 'Done at central density {0} g/cm^3\nSave to '.format(rhocs[-1])+outdir+tag+shortname+'.csv'

@@ -66,7 +66,7 @@ def tov(eospath,rhoc, rhocdm ,props=['R','M','Lambda'],stp=1e1,pts=2e3,maxr=2e6,
 #		sols[0,i] = res.t	# r values		# UNCOMMENT TO STORE FULL SOLS
 #		sols[1:,i] = res.y	# p, m + other values
 		
-	if res.y[props.index('R')] <= tol:
+	if res.y[props.index('R')] <= tol and res.y[props.index('Rdm')] >= tol:
 		#continue integration of dm variables with baryon pressuer = 0.
 		baryon_radius = res.t
 		baryon_mass = res.y[props.index('M')]
@@ -78,7 +78,7 @@ def tov(eospath,rhoc, rhocdm ,props=['R','M','Lambda'],stp=1e1,pts=2e3,maxr=2e6,
 			res.y[props.index('M')] = baryon_mass	     
 		dm_radius = res.t
 		
-	elif res.y[props.index('Rdm')] <= tol:
+	elif res.y[props.index('Rdm')] <= tol and res.y[props.index('R')] >= tol:
 		#continue integration of baryon variables with dm pressure  =0
 		dm_radius = res.t
 		dm_mass = res.y[props.index('Mdm')]
@@ -89,6 +89,10 @@ def tov(eospath,rhoc, rhocdm ,props=['R','M','Lambda'],stp=1e1,pts=2e3,maxr=2e6,
 			res.y[props.index('Rdm')] =0
 			res.y[props.index('Mdm')] = dm_mass
 				
+		bayon_radius = res.t
+		
+	else:
+		dm_radius = res.t
 		bayon_radius = res.t
 		
 #	vals = [sols[j,i] for j in range(len(props)+1)] # surface values of R, p, M, etc.

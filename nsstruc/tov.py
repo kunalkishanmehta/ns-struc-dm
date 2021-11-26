@@ -57,6 +57,7 @@ def tov(eospath,rhoc, rhocdm ,props=['R','M','Lambda'],stp=1e1,pts=2e3,maxr=2e6,
 #	sols = np.zeros((len(props)+1,pts)) # container for solutions
 	i=-1
 	dm_radius = 0
+	bayon_radius = 0
 	
 	while res.successful() and i < pts-1 and res.y[props.index('R')] >= tol and res.y[props.index('Rdm')] >= tol: # stop integration when pressure vanishes (to within tolerance tol)
 # 		if res.y[props.index('Rdm')]<tol and dm_radius == 0:

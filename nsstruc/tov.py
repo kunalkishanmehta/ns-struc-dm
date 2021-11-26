@@ -71,7 +71,7 @@ def tov(eospath,rhoc, rhocdm ,props=['R','M','Lambda'],stp=1e1,pts=2e3,maxr=2e6,
 		baryon_radius = res.t
 		baryon_mass = res.y[props.index('M')
 		
-		while res.succesful() and i < pts-1 and res.y[props.index('Rdm')] >= tol:
+		while res.successful() and i < pts-1 and res.y[props.index('Rdm')] >= tol:
 			i = i+1
 			res.integrate(res.t+dt)	
 			res.y[props.index('R')] =0
@@ -83,7 +83,7 @@ def tov(eospath,rhoc, rhocdm ,props=['R','M','Lambda'],stp=1e1,pts=2e3,maxr=2e6,
 		dm_radius = res.t
 		dm_mass = res.y[props.index('Mdm')
 		
-		while res.succesful() and i < pts-1 and res.y[props.index('R')] >= tol:
+		while res.successful() and i < pts-1 and res.y[props.index('R')] >= tol:
 			i = i+1
 			res.integrate(res.t+dt)	
 			res.y[props.index('Rdm')] =0

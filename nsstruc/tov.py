@@ -67,7 +67,7 @@ def tov(eospath,rhoc, rhocdm ,props=['R','M','Lambda'],stp=1e1,pts=2e3,maxr=2e6,
 #		sols[0,i] = res.t	# r values		# UNCOMMENT TO STORE FULL SOLS
 #		sols[1:,i] = res.y	# p, m + other values
 		dm_radius = res.t
-		bayon_radius = res.t
+		baryon_radius = res.t
 		
 	if res.y[props.index('R')] <= tol and res.y[props.index('Rdm')] >= tol:
 		#continue integration of dm variables with baryon pressuer = 0.
@@ -92,7 +92,7 @@ def tov(eospath,rhoc, rhocdm ,props=['R','M','Lambda'],stp=1e1,pts=2e3,maxr=2e6,
 			res.y[props.index('Rdm')] =0
 			res.y[props.index('Mdm')] = dm_mass
 				
-		bayon_radius = res.t
+		baryon_radius = res.t
 	
 		
 #	vals = [sols[j,i] for j in range(len(props)+1)] # surface values of R, p, M, etc.

@@ -6,7 +6,9 @@ from scipy.integrate import ode
 from .struceqs import *
 from .constants import *
 
-# INTERPOLATE CONTINUOUS FLUID VARIABLES FROM DISCRETE EOS DATA
+# INTERPOLATE CONTINUOUS FLUID VARIABLES FROM DISCRETE EOS DATA 
+file1 = open("MyFile.csv","w")
+file1.write('p,m,pdm,mdm')
 
 def tov(eospath,rhoc, rhocdm ,props=['R','M','Lambda'],stp=1e1,pts=2e3,maxr=2e6,tol=1e1):
 
@@ -64,6 +66,7 @@ def tov(eospath,rhoc, rhocdm ,props=['R','M','Lambda'],stp=1e1,pts=2e3,maxr=2e6,
 # 			dm_radius = res.t
 		i = i+1
 		res.integrate(res.t+dt)
+		file1.write('{0},{1},{2},{3}'.format(*res.y))
 #		sols[0,i] = res.t	# r values		# UNCOMMENT TO STORE FULL SOLS
 #		sols[1:,i] = res.y	# p, m + other values
 		dm_radius = res.t

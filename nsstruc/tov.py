@@ -8,7 +8,7 @@ from .constants import *
 
 # INTERPOLATE CONTINUOUS FLUID VARIABLES FROM DISCRETE EOS DATA 
 file1 = open("MyFile.csv","w")
-file1.write('p,m,pdm,mdm')
+file1.write('p ,m,pdm,mdm \n')
 
 def tov(eospath,rhoc, rhocdm ,props=['R','M','Lambda'],stp=1e1,pts=2e3,maxr=2e6,tol=1e1):
 
@@ -66,7 +66,7 @@ def tov(eospath,rhoc, rhocdm ,props=['R','M','Lambda'],stp=1e1,pts=2e3,maxr=2e6,
 # 			dm_radius = res.t
 		i = i+1
 		res.integrate(res.t+dt)
-		file1.write('{0},{1},{2},{3}'.format(*res.y))
+		file1.write('{0},{1},{2},{3}\n'.format(*res.y))
 #		sols[0,i] = res.t	# r values		# UNCOMMENT TO STORE FULL SOLS
 #		sols[1:,i] = res.y	# p, m + other values
 		dm_radius = res.t
@@ -80,6 +80,7 @@ def tov(eospath,rhoc, rhocdm ,props=['R','M','Lambda'],stp=1e1,pts=2e3,maxr=2e6,
 		while res.successful() and i < pts-1 and res.y[props.index('Rdm')] >= tol:
 			i = i+1
 			res.integrate(res.t+dt)	
+			file1.write('{0},{1},{2},{3}\n'.format(*res.y))
 			res.y[props.index('R')] =0
 			res.y[props.index('M')] = baryon_mass	     
 		dm_radius = res.t
@@ -92,6 +93,7 @@ def tov(eospath,rhoc, rhocdm ,props=['R','M','Lambda'],stp=1e1,pts=2e3,maxr=2e6,
 		while res.successful() and i < pts-1 and res.y[props.index('R')] >= tol:
 			i = i+1
 			res.integrate(res.t+dt)	
+			file1.write('{0},{1},{2},{3}\n'.format(*res.y))
 			res.y[props.index('Rdm')] =0
 			res.y[props.index('Mdm')] = dm_mass
 				

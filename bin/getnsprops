@@ -52,7 +52,7 @@ for eosname in eosnames:
 
 	eospath = indir+eosname
 	outfile = open(outdir+tag+shortname+".csv","w")
-	outfile.write('rhoc,rhocdm,'+','.join(props)+'\n')
+	outfile.write('rhoc,rhocdm,'+','.join(props) + 'Mg,fdm \n')
 	
 	eosdat = np.genfromtxt(eospath,names=True,delimiter=',')
 	rhodat = eosdat['baryon_density'] # rest-mass energy density in units of g/cm^3

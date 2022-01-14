@@ -30,7 +30,7 @@ def hydrodm(r,y,*args ): # hydrostatic equilibrium
 	mu = args[0] # mu in units of g/cm^3
 	
 	
-	return -G * (mu(pdm)+p)*((m+mdm) + 4.*np.pi*r**3*(p+pdm)) / (c**2*r**2*(1.-2.*G*(m+mdm)/(c**2*r)))
+	return -G * (mu(pdm)+pdm)*((m+mdm) + 4.*np.pi*r**3*(p+pdm)) / (c**2*r**2*(1.-2.*G*(m+mdm)/(c**2*r)))
 
 	
 def mass(r,y,*args): # definition of the mass

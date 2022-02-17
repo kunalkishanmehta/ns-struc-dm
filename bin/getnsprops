@@ -31,8 +31,16 @@ props = str(opts.props).split(',')
 numprops = len(props)
 rhorng = str(opts.rhorng).split(',')
 rhodmrng = str(opts.rhodmrng).split(',')
-rhoi, rhof = [float(rho) for rho in rhorng]
-rhodmi, rhodmf = [float(rho) for rho in rhodmrng]
+
+if len(rhorng) >2:
+	rhocord = [float(rho) for rho in rhorng]
+else:
+	rhoi, rhof = [float(rho) for rho in rhorng]
+	
+if len(rhodmrng) >2:
+	rhodmcord = [float(rho) for rho in rhodmrng]
+else:
+	rhodmi, rhodmf = [float(rho) for rho in rhodmrng]
 numrhoc = int(float(opts.numrhoc))
 stp = float(opts.stpi)
 numpts = int(float(opts.numpts))
@@ -70,9 +78,14 @@ for eosname in eosnames:
 		
 	cs2pi = interp1d(pdat,np.gradient(mudat,pdat),kind='linear', bounds_error=False, fill_value=0)
 	def cs2i(p): return cs2pi(p) # 1/sound speed squared
-	
-	rhocs = np.linspace(max(rhoi*rhonuc,rhodat[0]),min(rhof*rhonuc,rhodat[-1]),numrhoc)
-	rhocdms = np.linspace(max(rhodmi*rhonuc,rhodat[0]),min(rhodmf*rhonuc,rhodat[-1]),numrhoc)
+	if len(rhorng) >2:
+		rhocs = rhocord
+	else:
+		rhocs = np.linspace(max(rhoi*rhonuc,rhodat[0]),min(rhof*rhonuc,rhodat[-1]),numrhoc)
+	if len(rhodmrng) >2:
+		rhocdms = rhodmcord
+	else:
+		rhocdms = np.linspace(max(rhodmi*rhonuc,rhodat[0]),min(rhodmf*rhonuc,rhodat[-1]),numrhoc)
 	
 	properties = np.zeros((numrhoc**2, numprops+4))
 	

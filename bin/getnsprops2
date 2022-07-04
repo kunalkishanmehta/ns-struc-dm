@@ -9,6 +9,7 @@ from optparse import OptionParser
 from scipy.interpolate import interp1d
 from nsstruc.tov import tov
 from nsstruc.constants import *
+import pandas as pd
 # from nsstruc.pltsetup import *
 
 parser = OptionParser(usage=__usage__, description=__doc__)
@@ -110,5 +111,6 @@ for eosname in eosnames:
 	if verb == True: print 'Done at central density {0} g/cm^3\nSave to '.format(rhocs[-1])+outdir+tag+shortname+'.csv'
 	
 	np.savetxt(outfile,properties,delimiter=',')
-	print(np.shape(properties))
-print('again', np.shape(properties))
+	header = ['rhoc', 'rhocdm', 'R', 'M', 'Rdm','Mdm','Mb', 'Md', 'Mg', 'fdm' ]
+	properties2 = pd.DataFrame(properties, columns = header)
+	print(properties2)

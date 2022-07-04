@@ -9,7 +9,7 @@ from optparse import OptionParser
 from scipy.interpolate import interp1d
 from nsstruc.tov import tov
 from nsstruc.constants import *
-import pandas as pd
+# import pandas as pd
 # from nsstruc.pltsetup import *
 
 parser = OptionParser(usage=__usage__, description=__doc__)

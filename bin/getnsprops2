@@ -114,3 +114,61 @@ for eosname in eosnames:
 # 	header = ['rhoc', 'rhocdm', 'R', 'M', 'Rdm','Mdm','Mb', 'Md', 'Mg', 'fdm' ]
 # 	properties2 = pd.DataFrame(properties, columns = header)
 	print(properties[:,0])
+
+# to associate the dark matter fraction to each point in rhoc-rhocdm space, interpolate 3D (rhoc,rhocdm,fdm) data to get a function fdm(rhoc,rhocdm)
+dat = properties
+x = dat[:,0] # input data
+y = dat[:,1]
+z = dat[:,-1]
+
+X = np.linspace(0.1e14,3.1e15,1000) # the grid where we'll evaluate fdm(rhoc,rhocdm)
+Y = np.linspace(0.1e14,3.1e15,1000)
+x_grid, y_grid = np.meshgrid(X, Y)
+
+outdat = scipy.interpolate.griddata((x,y),z,(x_grid,y_grid),'linear')
+# fdm evaluated on the grid, with one of three methods: nearest, linear, cubic
+plt.pcolormesh(x_grid,y_grid,outdat,cmap='gray_r') # show fdm(rhoc,rhocdm) as a color map (darker = larger fdm)
+
+num_cs = 9
+cs = plt.contour(x_grid,y_grid,outdat,list(np.geomspace(1e-2,0.1,2))+list(np.linspace(0.1,0.9,num_cs)[1:])+list(reversed(1.-np.geomspace(1e-2,0.1,2)[:-1])),colors='r') # plot the contours of constant fdm(rhoc,rhocdm)
+
+contours = []
+for i in range(num_cs+3):
+  try: c = cs.allsegs[i][0] # if a contour was plotted, save it
+  except: continue
+  contours += [c] # list that stores all the extracted contours
+
+# downsample the contours to get a list of (rhoc,rhocdm) coordinates to use to generate a constant-fdm sequence of stars
+
+num_stars = 100 # how many stars to aim for in the sequence
+rhocs, rhocdms = [], []
+
+for c in contours:
+  
+  skip = int(len(c[:,0])/num_stars)
+  rhocs += [c[::skip,0]]
+  rhocdms += [c[::skip,1]] # downselect to num_stars (rhoc,rhocdm) points
+
+
+rhomin = 2.8e14 # because some central densities are too small to give physical neutron stars, throw out those below rhomin
+rhomax = 12*rhomin # because some central densities are too large to give physical neutron stars, throw out those above rhomax
+rhocs_out, rhocdms_out = [], []
+
+for c,cdm in zip(rhocs,rhocdms):
+  c_out, cdm_out = [], []
+
+  for rhoc,rhocdm in zip(c,cdm):
+    
+    if (rhoc >= rhomin or rhocdm >= rhomin) and rhoc <= rhomax and rhocdm <=rhomax: # one of rhoc/rhocdm below rhomin is ok, to allow pure regular matter or pure dm star
+      c_out += [rhoc]
+      cdm_out += [rhocdm]
+  rhocs_out += [c_out]
+  rhocdms_out += [cdm_out]
+
+def find_rhos(n):
+  newrhoc = [str(r) for r in rhocs_out[n]]
+  find_rhos.newrhocs_list = ','.join(newrhoc)
+
+  newrhocdm = [str(r) for r in rhocdms_out[n]]
+  find_rhos.newrhocdms_list = ','.join(newrhocdm)
+  return find_rhos.newrhocs_list, find_rhos.newrhocdms_list

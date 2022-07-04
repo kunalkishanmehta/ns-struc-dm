@@ -112,4 +112,4 @@ for eosname in eosnames:
 	np.savetxt(outfile,properties,delimiter=',')
 
 
-properties
+print(properties)

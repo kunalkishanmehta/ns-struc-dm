@@ -111,6 +111,6 @@ for eosname in eosnames:
 	if verb == True: print 'Done at central density {0} g/cm^3\nSave to '.format(rhocs[-1])+outdir+tag+shortname+'.csv'
 	
 	np.savetxt(outfile,properties,delimiter=',')
-	header = ['rhoc', 'rhocdm', 'R', 'M', 'Rdm','Mdm','Mb', 'Md', 'Mg', 'fdm' ]
-	properties2 = pd.DataFrame(properties, columns = header)
-	print(properties2)
+# 	header = ['rhoc', 'rhocdm', 'R', 'M', 'Rdm','Mdm','Mb', 'Md', 'Mg', 'fdm' ]
+# 	properties2 = pd.DataFrame(properties, columns = header)
+# 	print(properties2)

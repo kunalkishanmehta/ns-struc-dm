@@ -111,3 +111,4 @@ for eosname in eosnames:
 	
 	np.savetxt(outfile,properties,delimiter=',')
 	print(np.shape(properties)
+print('again', np.shape(properties)

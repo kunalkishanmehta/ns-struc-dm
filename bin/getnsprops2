@@ -15,6 +15,7 @@ from scipy.interpolate import interp1d
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import h5py
 # import pandas as pd
 # from nsstruc.pltsetup import *
 
@@ -127,13 +128,11 @@ for eosname in eosnames:
 	headers = ('rhoc,rhocdm,'+','.join(props) + ',Mg,fdm').split(',')
 	properties[headers.index('rhoc')]
 		   
-	print(properties[:,0])
 
 # to associate the dark matter fraction to each point in rhoc-rhocdm space, interpolate 3D (rhoc,rhocdm,fdm) data to get a function fdm(rhoc,rhocdm)
-dat = properties
-x = properties[headers.index('rhoc')] # input data
-y = properties[headers.index('rhocdm')]
-z = properties[headers.index('Mb')]
+x = properties[headers.index('R')] # input data
+y = properties[headers.index('M')]
+z = properties[headers.index('fdm')]
 
 X = np.linspace(0.1e14,3.1e15,1000) # the grid where we'll evaluate fdm(rhoc,rhocdm)
 Y = np.linspace(0.1e14,3.1e15,1000)
@@ -143,7 +142,8 @@ outdat = scipy.interpolate.griddata((x,y),z,(x_grid,y_grid),'linear')
 # fdm evaluated on the grid, with one of three methods: nearest, linear, cubic
 
 num_cs = 9
-cs = plt.contour(x_grid,y_grid,outdat,list(np.geomspace(1e-2,0.1,2))+list(np.linspace(0.1,0.9,num_cs)[1:])+list(reversed(1.-np.geomspace(1e-2,0.1,2)[:-1])),colors='r') # plot the contours of constant fdm(rhoc,rhocdm)
+contour_fdm = list(np.geomspace(1e-2,0.1,2))+list(np.linspace(0.1,0.9,num_cs)[1:])+list(reversed(1.-np.geomspace(1e-2,0.1,2)[:-1]))
+cs = plt.contour(x_grid,y_grid,outdat,contour_fdm ,colors='r') # plot the contours of constant fdm(rhoc,rhocdm)
 
 contours = []
 for i in range(num_cs+3):
@@ -184,4 +184,24 @@ def find_rhos(n):
 
   newrhocdm = [str(r) for r in rhocdms_out[n]]
   find_rhos.newrhocdms_list = ','.join(newrhocdm)
-  return find_rhos.newrhocs_list, find_rhos.newrhocdms_list
+  return find_rhos.newrhocs_list, find_rhos.newrhocdms_list\
+
+dict_properties = {}
+
+for i in range(num_cs+3):
+	
+	newrhocslist, newrhocdmlist = find_rhos(i)
+
+	newproperties = np.zeros((len(newrhocslist),numprops+4))
+	for rhoc in newrhocslist: # compute macroscopic properties for star of each central density
+		for rhocdm in newrhocdmlist:
+			macro = tov([mu,P,cs2i,Rho],rhoc, rhocdm, props,stp,numpts,maxr,tol)
+			newproperties[i] = [item for List in [[rhoc],[rhocdm],macro] for item in List] + [macro[props.index('Mdm')]+macro[props.index('M')],macro[props.index('Md')]/(macro[props.index('Mb')]+macro[props.index('Md')])]      
+			i = i+1
+	dict_properties[contour_fdm[i]] = newproperties
+
+		
+hf = h5py.File('dict_properties.h5', 'w')
+hf.create_dataset('dataset_prop', data=dict_properties)
+hf.close()
+

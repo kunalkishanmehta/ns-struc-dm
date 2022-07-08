@@ -12,11 +12,12 @@ from nsstruc.constants import *
 import scipy.interpolate
 from scipy.optimize import curve_fit
 from scipy.interpolate import interp1d
-# import matplotlib
-# matplotlib.use('Agg')
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 # import pandas as pd
 # from nsstruc.pltsetup import *
+
 
 parser = OptionParser(usage=__usage__, description=__doc__)
 parser.add_option('-p', '--props', default='R,M,Lambda', help='comma-separated list of NS properties to calculate, DEFAULT=R,M,Lambda', metavar='R,M,Lambda')
@@ -43,7 +44,7 @@ if len(rhorng) >2:
 	rhocord = [float(rho) for rho in rhorng]
 else:
 	rhoi, rhof = [float(rho) for rho in rhorng]
-	
+
 if len(rhodmrng) >2:
 	rhodmcord = [float(rho) for rho in rhodmrng]
 else:
@@ -60,29 +61,32 @@ verb = opts.verbose
 
 # CALCULATE NS PROPERTIES FOR EACH EOS
 
+# def Solver(eos,props = 'R,M,Lambda'):
+	
 for eosname in eosnames:
 
 	shortname = (eosname.split('.')[0]).split('eos-')[-1]
 	if verb == True: print 'Calculate properties of '+str(shortname)+' stars'
 
 	eospath = indir+eosname
+	eospath2 = str(eos)
 	outfile = open(outdir+tag+shortname+".csv","w")
 	outfile.write('rhoc,rhocdm,'+','.join(props) + ',Mg,fdm \n')
-	
-	eosdat = np.genfromtxt(eospath,names=True,delimiter=',')
+
+	eosdat = np.genfromtxt(eos,names=True,delimiter=',')
 	rhodat = eosdat['baryon_density'] # rest-mass energy density in units of g/cm^3
 	pdat = eosdat['pressurec2'] # pressure in units of g/cm^3
 	mudat = eosdat['energy_densityc2'] # total energy density in units of g/cm^3
-	
+
 	rhop = interp1d(pdat,rhodat,kind='linear',bounds_error=False,fill_value=0)
 	def Rho(p): return rhop(p)
-	
+
 	mup = interp1d(pdat,mudat,kind='linear',bounds_error=False,fill_value=0)
 	def mu(p): return mup(p)
-		
+
 	prho = interp1d(rhodat,pdat,kind='linear',bounds_error=False,fill_value=0)
 	def P(rho): return prho(rho)
-		
+
 	cs2pi = interp1d(pdat,np.gradient(mudat,pdat),kind='linear', bounds_error=False, fill_value=0)
 	def cs2i(p): return cs2pi(p) # 1/sound speed squared
 	if len(rhorng) >2:
@@ -97,11 +101,11 @@ for eosname in eosnames:
 	else:
 		rhocdms = np.linspace(max(rhodmi*rhonuc,rhodat[0]),min(rhodmf*rhonuc,rhodat[-1]),numrhoc)
 		properties = np.zeros((numrhoc**2, numprops+4))
-	
-	
+
+
 	i = 0
 	if verb == True: print 'Start at central density {0} g/cm^3'.format(rhocs[0])
-		
+
 	if len(rhorng) >2:
 		for rhoc,rhocdm in zip(rhocs,rhocdms): # compute macroscopic properties for star of each central density
 			macro = tov([mu,P,cs2i,Rho],rhoc, rhocdm, props,stp,numpts,maxr,tol)
@@ -115,17 +119,21 @@ for eosname in eosnames:
 				i = i+1
 
 	if verb == True: print 'Done at central density {0} g/cm^3\nSave to '.format(rhocs[-1])+outdir+tag+shortname+'.csv'
-	
+
 	np.savetxt(outfile,properties,delimiter=',')
 # 	header = ['rhoc', 'rhocdm', 'R', 'M', 'Rdm','Mdm','Mb', 'Md', 'Mg', 'fdm' ]
 # 	properties2 = pd.DataFrame(properties, columns = header)
+	
+	headers = ('rhoc,rhocdm,'+','.join(props) + ',Mg,fdm').split(',')
+	properties[headers.index('rhoc')]
+		   
 	print(properties[:,0])
 
 # to associate the dark matter fraction to each point in rhoc-rhocdm space, interpolate 3D (rhoc,rhocdm,fdm) data to get a function fdm(rhoc,rhocdm)
 dat = properties
-x = dat[:,0] # input data
-y = dat[:,1]
-z = dat[:,-1]
+x = properties[headers.index('rhoc')] # input data
+y = properties[headers.index('rhocdm')]
+z = properties[headers.index('Mb')]
 
 X = np.linspace(0.1e14,3.1e15,1000) # the grid where we'll evaluate fdm(rhoc,rhocdm)
 Y = np.linspace(0.1e14,3.1e15,1000)
@@ -135,45 +143,45 @@ outdat = scipy.interpolate.griddata((x,y),z,(x_grid,y_grid),'linear')
 # fdm evaluated on the grid, with one of three methods: nearest, linear, cubic
 
 num_cs = 9
-# cs = plt.contour(x_grid,y_grid,outdat,list(np.geomspace(1e-2,0.1,2))+list(np.linspace(0.1,0.9,num_cs)[1:])+list(reversed(1.-np.geomspace(1e-2,0.1,2)[:-1])),colors='r') # plot the contours of constant fdm(rhoc,rhocdm)
+cs = plt.contour(x_grid,y_grid,outdat,list(np.geomspace(1e-2,0.1,2))+list(np.linspace(0.1,0.9,num_cs)[1:])+list(reversed(1.-np.geomspace(1e-2,0.1,2)[:-1])),colors='r') # plot the contours of constant fdm(rhoc,rhocdm)
 
-# contours = []
-# for i in range(num_cs+3):
-#   try: c = cs.allsegs[i][0] # if a contour was plotted, save it
-#   except: continue
-#   contours += [c] # list that stores all the extracted contours
+contours = []
+for i in range(num_cs+3):
+  try: c = cs.allsegs[i][0] # if a contour was plotted, save it
+  except: continue
+  contours += [c] # list that stores all the extracted contours
 
-# # downsample the contours to get a list of (rhoc,rhocdm) coordinates to use to generate a constant-fdm sequence of stars
+# downsample the contours to get a list of (rhoc,rhocdm) coordinates to use to generate a constant-fdm sequence of stars
 
-# num_stars = 100 # how many stars to aim for in the sequence
-# rhocs, rhocdms = [], []
+num_stars = 100 # how many stars to aim for in the sequence
+rhocs, rhocdms = [], []
 
-# for c in contours:
+for c in contours:
   
-#   skip = int(len(c[:,0])/num_stars)
-#   rhocs += [c[::skip,0]]
-#   rhocdms += [c[::skip,1]] # downselect to num_stars (rhoc,rhocdm) points
+  skip = int(len(c[:,0])/num_stars)
+  rhocs += [c[::skip,0]]
+  rhocdms += [c[::skip,1]] # downselect to num_stars (rhoc,rhocdm) points
 
 
-# rhomin = 2.8e14 # because some central densities are too small to give physical neutron stars, throw out those below rhomin
-# rhomax = 12*rhomin # because some central densities are too large to give physical neutron stars, throw out those above rhomax
-# rhocs_out, rhocdms_out = [], []
+rhomin = 2.8e14 # because some central densities are too small to give physical neutron stars, throw out those below rhomin
+rhomax = 12*rhomin # because some central densities are too large to give physical neutron stars, throw out those above rhomax
+rhocs_out, rhocdms_out = [], []
 
-# for c,cdm in zip(rhocs,rhocdms):
-#   c_out, cdm_out = [], []
+for c,cdm in zip(rhocs,rhocdms):
+  c_out, cdm_out = [], []
 
-#   for rhoc,rhocdm in zip(c,cdm):
+  for rhoc,rhocdm in zip(c,cdm):
     
-#     if (rhoc >= rhomin or rhocdm >= rhomin) and rhoc <= rhomax and rhocdm <=rhomax: # one of rhoc/rhocdm below rhomin is ok, to allow pure regular matter or pure dm star
-#       c_out += [rhoc]
-#       cdm_out += [rhocdm]
-#   rhocs_out += [c_out]
-#   rhocdms_out += [cdm_out]
+    if (rhoc >= rhomin or rhocdm >= rhomin) and rhoc <= rhomax and rhocdm <=rhomax: # one of rhoc/rhocdm below rhomin is ok, to allow pure regular matter or pure dm star
+      c_out += [rhoc]
+      cdm_out += [rhocdm]
+  rhocs_out += [c_out]
+  rhocdms_out += [cdm_out]
 
-# def find_rhos(n):
-#   newrhoc = [str(r) for r in rhocs_out[n]]
-#   find_rhos.newrhocs_list = ','.join(newrhoc)
+def find_rhos(n):
+  newrhoc = [str(r) for r in rhocs_out[n]]
+  find_rhos.newrhocs_list = ','.join(newrhoc)
 
-#   newrhocdm = [str(r) for r in rhocdms_out[n]]
-#   find_rhos.newrhocdms_list = ','.join(newrhocdm)
-#   return find_rhos.newrhocs_list, find_rhos.newrhocdms_list
+  newrhocdm = [str(r) for r in rhocdms_out[n]]
+  find_rhos.newrhocdms_list = ','.join(newrhocdm)
+  return find_rhos.newrhocs_list, find_rhos.newrhocdms_list

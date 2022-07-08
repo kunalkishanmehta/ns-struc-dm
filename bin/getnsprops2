@@ -12,9 +12,9 @@ from nsstruc.constants import *
 import scipy.interpolate
 from scipy.optimize import curve_fit
 from scipy.interpolate import interp1d
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
+# import matplotlib
+# matplotlib.use('Agg')
+# import matplotlib.pyplot as plt
 # import pandas as pd
 # from nsstruc.pltsetup import *
 

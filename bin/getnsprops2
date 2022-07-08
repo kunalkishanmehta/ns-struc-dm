@@ -69,11 +69,11 @@ for eosname in eosnames:
 	if verb == True: print 'Calculate properties of '+str(shortname)+' stars'
 
 	eospath = indir+eosname
-	eospath2 = str(eos)
+# 	eospath2 = str(eos)
 	outfile = open(outdir+tag+shortname+".csv","w")
 	outfile.write('rhoc,rhocdm,'+','.join(props) + ',Mg,fdm \n')
 
-	eosdat = np.genfromtxt(eos,names=True,delimiter=',')
+	eosdat = np.genfromtxt(eospath,names=True,delimiter=',')
 	rhodat = eosdat['baryon_density'] # rest-mass energy density in units of g/cm^3
 	pdat = eosdat['pressurec2'] # pressure in units of g/cm^3
 	mudat = eosdat['energy_densityc2'] # total energy density in units of g/cm^3

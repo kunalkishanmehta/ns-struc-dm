@@ -204,4 +204,6 @@ for i in range(num_cs+3):
 hf = h5py.File('dict_properties.h5', 'w')
 hf.create_dataset('dataset_prop', data=dict_properties)
 hf.close()
-
+# Print a message confirming the dataset creation and file path
+print('Dataset created successfully!')
+print('Dataset saved to: dict_properties.h5')

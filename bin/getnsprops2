@@ -151,7 +151,7 @@ plt.scatter(x,y,marker='.',s=3) # overlay the rhoc-rhocdm scatter points for com
 
 plt.xlabel('rho_c [g/cm^3]')
 plt.ylabel('rho_c^DM [g/cm^3]')
-plt.show()
+# plt.show()
 
 # contours = []
 # for i in range(num_cs+3):

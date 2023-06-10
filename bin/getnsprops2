@@ -189,7 +189,7 @@ def find_rhos(n):
 dict_properties = {}
 
 for i in range(num_cs+3):
-	
+	print('i=', i)
 	newrhocslist, newrhocdmlist = find_rhos(i)
 
 	newproperties = np.zeros((len(newrhocslist),numprops+4))

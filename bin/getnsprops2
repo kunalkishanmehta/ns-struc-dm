@@ -128,7 +128,8 @@ for eosname in eosnames:
 	headers = ('rhoc,rhocdm,'+','.join(props) + ',Mg,fdm').split(',')
 	properties[headers.index('rhoc')]
 		   
-print(properties[headers.index('rhoc')])
+print(properties[:, headers.index('rhoc')])
+
 # # to associate the dark matter fraction to each point in rhoc-rhocdm space, interpolate 3D (rhoc,rhocdm,fdm) data to get a function fdm(rhoc,rhocdm)
 # x = properties[headers.index('R')] # input data
 # y = properties[headers.index('rhocdm')]

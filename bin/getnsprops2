@@ -139,13 +139,13 @@ print(np.count_nonzero(~np.isnan(outdat)))
 print(x.size, y.size, z.size)
 print(np.isnan(x), np.isnan(y), np.isnan(z))
 
-X = np.linspace(0.1e14,3.1e15,1000) # the grid where we'll evaluate fdm(rhoc,rhocdm)
-Y = np.linspace(0.1e14,3.1e15,1000)
-x_grid, y_grid = np.meshgrid(X, Y)
+# X = np.linspace(0.1e14,3.1e15,1000) # the grid where we'll evaluate fdm(rhoc,rhocdm)
+# Y = np.linspace(0.1e14,3.1e15,1000)
+# x_grid, y_grid = np.meshgrid(X, Y)
 
-outdat = scipy.interpolate.griddata((x,y),z,(x_grid,y_grid),'linear')
- # fdm evaluated on the grid, with one of three methods: nearest, linear, cubic
-print(np.count_nonzero(~np.isnan(outdat)))
+# outdat = scipy.interpolate.griddata((x,y),z,(x_grid,y_grid),'linear')
+#  # fdm evaluated on the grid, with one of three methods: nearest, linear, cubic
+# print(np.count_nonzero(~np.isnan(outdat)))
 
 # num_cs = 9
 # contour_fdm = list(np.geomspace(1e-2,0.1,2))+list(np.linspace(0.1,0.9,num_cs)[1:])+list(reversed(1.-np.geomspace(1e-2,0.1,2)[:-1]))

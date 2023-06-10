@@ -72,7 +72,7 @@ for eosname in eosnames:
 	eospath = indir+eosname
 # 	eospath2 = str(eos)
 	outfile = open(outdir+tag+shortname+".csv","w")
-	outfile.write('rhoc,rhocdm,'+','.join(props) + ',Mg,fdm \n')
+	outfile.write('rhoc,rhocdm,' + ','.join(props) + ',Mg,fdm \n')
 
 	eosdat = np.genfromtxt(eospath,names=True,delimiter=',')
 	rhodat = eosdat['baryon_density'] # rest-mass energy density in units of g/cm^3
@@ -105,7 +105,7 @@ for eosname in eosnames:
 
 
 	i = 0
-	if verb == True: print 'Start at central density {0} g/cm^3'.format(rhocs[0])
+	if verb == True: print('Start at central density {0} g/cm^3'.format(rhocs[0]))
 
 	if len(rhorng) >2:
 		for rhoc,rhocdm in zip(rhocs,rhocdms): # compute macroscopic properties for star of each central density

@@ -169,6 +169,7 @@ rhocs, rhocdms = [], []
 for c in contours:
   
   skip = int(len(c[:,0])/num_stars)
+  print("Skip:", skip)
   rhocs += [c[::skip,0]]
   rhocdms += [c[::skip,1]] # downselect to num_stars (rhoc,rhocdm) points
 

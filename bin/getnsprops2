@@ -142,7 +142,7 @@ x_grid, y_grid = np.meshgrid(X, Y)
 
 outdat = scipy.interpolate.griddata((x,y),z,(x_grid,y_grid),'linear')
  # fdm evaluated on the grid, with one of three methods: nearest, linear, cubic
-print(np.count_nonzero(~np.isnan(outdat))
+print(np.count_nonzero(~np.isnan(outdat)))
 
 # num_cs = 9
 # contour_fdm = list(np.geomspace(1e-2,0.1,2))+list(np.linspace(0.1,0.9,num_cs)[1:])+list(reversed(1.-np.geomspace(1e-2,0.1,2)[:-1]))

@@ -139,7 +139,7 @@ X = np.linspace(0.1e14,3.1e15,1000) # the grid where we'll evaluate fdm(rhoc,rho
 Y = np.linspace(0.1e14,3.1e15,1000)
 x_grid, y_grid = np.meshgrid(X, Y)
 
-outdat = scipy.interpolate.griddata((x,y),z,(x_grid,y_grid),'linear')
+outdat = scipy.interpolate.griddata((x,y),z,(x_grid,y_grid),'cubic')
 #  # fdm evaluated on the grid, with one of three methods: nearest, linear, cubic
 
 num_cs = 9

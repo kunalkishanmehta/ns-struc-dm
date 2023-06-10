@@ -67,7 +67,7 @@ verb = opts.verbose
 for eosname in eosnames:
 
 	shortname = (eosname.split('.')[0]).split('eos-')[-1]
-	if verb == True: print 'Calculate properties of '+str(shortname)+' stars'
+	if verb == True: print('Calculate properties of ' + str(shortname) + ' stars')
 
 	eospath = indir+eosname
 # 	eospath2 = str(eos)

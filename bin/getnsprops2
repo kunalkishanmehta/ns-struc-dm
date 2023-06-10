@@ -143,15 +143,15 @@ outdat = scipy.interpolate.griddata((x,y),z,(x_grid,y_grid),'nearest')
 #  # fdm evaluated on the grid, with one of three methods: nearest, linear, cubic
 print(np.count_nonzero(~np.isnan(outdat)))
 
-# num_cs = 9
-# contour_fdm = list(np.geomspace(1e-2,0.1,2))+list(np.linspace(0.1,0.9,num_cs)[1:])+list(reversed(1.-np.geomspace(1e-2,0.1,2)[:-1]))
-# cs = plt.contour(x_grid,y_grid,outdat,contour_fdm ,colors='r') # plot the contours of constant fdm(rhoc,rhocdm)
+num_cs = 9
+contour_fdm = list(np.geomspace(1e-2,0.1,2))+list(np.linspace(0.1,0.9,num_cs)[1:])+list(reversed(1.-np.geomspace(1e-2,0.1,2)[:-1]))
+cs = plt.contour(x_grid,y_grid,outdat,contour_fdm ,colors='r') # plot the contours of constant fdm(rhoc,rhocdm)
 
-# plt.scatter(x,y,marker='.',s=3) # overlay the rhoc-rhocdm scatter points for comparison
+plt.scatter(x,y,marker='.',s=3) # overlay the rhoc-rhocdm scatter points for comparison
 
-# plt.xlabel('rho_c [g/cm^3]')
-# plt.ylabel('rho_c^DM [g/cm^3]')
-# plt.show()
+plt.xlabel('rho_c [g/cm^3]')
+plt.ylabel('rho_c^DM [g/cm^3]')
+plt.show()
 
 # contours = []
 # for i in range(num_cs+3):

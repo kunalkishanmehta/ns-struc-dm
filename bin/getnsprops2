@@ -134,22 +134,24 @@ x = properties[headers.index('R')] # input data
 y = properties[headers.index('rhocdm')]
 z = properties[headers.index('fdm')]
 
-X = np.linspace(0.1e14,3.1e15,1000) # the grid where we'll evaluate fdm(rhoc,rhocdm)
-Y = np.linspace(0.1e14,3.1e15,1000)
-x_grid, y_grid = np.meshgrid(X, Y)
+print(x)
 
-outdat = scipy.interpolate.griddata((x,y),z,(x_grid,y_grid),'linear')
- # fdm evaluated on the grid, with one of three methods: nearest, linear, cubic
+# X = np.linspace(0.1e14,3.1e15,1000) # the grid where we'll evaluate fdm(rhoc,rhocdm)
+# Y = np.linspace(0.1e14,3.1e15,1000)
+# x_grid, y_grid = np.meshgrid(X, Y)
 
-num_cs = 9
-contour_fdm = list(np.geomspace(1e-2,0.1,2))+list(np.linspace(0.1,0.9,num_cs)[1:])+list(reversed(1.-np.geomspace(1e-2,0.1,2)[:-1]))
-cs = plt.contour(x_grid,y_grid,outdat,contour_fdm ,colors='r') # plot the contours of constant fdm(rhoc,rhocdm)
+# outdat = scipy.interpolate.griddata((x,y),z,(x_grid,y_grid),'linear')
+#  # fdm evaluated on the grid, with one of three methods: nearest, linear, cubic
 
-plt.scatter(x,y,marker='.',s=3) # overlay the rhoc-rhocdm scatter points for comparison
+# num_cs = 9
+# contour_fdm = list(np.geomspace(1e-2,0.1,2))+list(np.linspace(0.1,0.9,num_cs)[1:])+list(reversed(1.-np.geomspace(1e-2,0.1,2)[:-1]))
+# cs = plt.contour(x_grid,y_grid,outdat,contour_fdm ,colors='r') # plot the contours of constant fdm(rhoc,rhocdm)
 
-plt.xlabel('rho_c [g/cm^3]')
-plt.ylabel('rho_c^DM [g/cm^3]')
-plt.show()
+# plt.scatter(x,y,marker='.',s=3) # overlay the rhoc-rhocdm scatter points for comparison
+
+# plt.xlabel('rho_c [g/cm^3]')
+# plt.ylabel('rho_c^DM [g/cm^3]')
+# plt.show()
 
 # contours = []
 # for i in range(num_cs+3):

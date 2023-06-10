@@ -135,7 +135,7 @@ x = properties[:, headers.index('R')]  # Input data from 'R' column
 y = properties[:, headers.index('rhocdm')]  # Input data from 'rhocdm' column
 z = properties[:, headers.index('fdm')]  # Input data from 'fdm' column
 
-print(np.count_nonzero(~np.isnan(outdat)))
+
 print(x.size, y.size, z.size)
 print(np.isnan(x), np.isnan(y), np.isnan(z))
 

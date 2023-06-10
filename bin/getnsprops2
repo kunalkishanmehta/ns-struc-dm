@@ -184,7 +184,7 @@ def find_rhos(n):
 
   newrhocdm = [str(r) for r in rhocdms_out[n]]
   find_rhos.newrhocdms_list = ','.join(newrhocdm)
-  return find_rhos.newrhocs_list, find_rhos.newrhocdms_list\
+  return find_rhos.newrhocs_list, find_rhos.newrhocdms_list
 
 dict_properties = {}
 

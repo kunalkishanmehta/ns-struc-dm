@@ -135,7 +135,9 @@ x = properties[:, headers.index('R')]  # Input data from 'R' column
 y = properties[:, headers.index('rhocdm')]  # Input data from 'rhocdm' column
 z = properties[:, headers.index('fdm')]  # Input data from 'fdm' column
 
-print(len(x))
+print(np.count_nonzero(~np.isnan(outdat)))
+print(x.size, y.size, z.size)
+print(np.isnan(x), np.isnan(y), np.isnan(z))
 
 X = np.linspace(0.1e14,3.1e15,1000) # the grid where we'll evaluate fdm(rhoc,rhocdm)
 Y = np.linspace(0.1e14,3.1e15,1000)

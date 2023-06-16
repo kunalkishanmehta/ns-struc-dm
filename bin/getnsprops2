@@ -192,12 +192,12 @@ for c,cdm in zip(rhocs,rhocdms):
   rhocdms_out += [cdm_out]
 
 def find_rhos(n):
-  newrhoc = [str(r) for r in rhocs_out[n]]
-  find_rhos.newrhocs_list = ','.join(newrhoc)
+  newrhoc = rhocs_out[n]
+  
 
-  newrhocdm = [str(r) for r in rhocdms_out[n]]
-  find_rhos.newrhocdms_list = ','.join(newrhocdm)
-  return find_rhos.newrhocs_list, find_rhos.newrhocdms_list
+  newrhocdm = rhocdms_out[n]
+ 
+  return newrhoc, newrhocdm
 
 dict_properties = {}
 

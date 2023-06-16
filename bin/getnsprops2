@@ -148,11 +148,11 @@ contour_fdm = list(np.geomspace(1e-2, 0.1, 2)) + list(np.linspace(0.1, 0.9, num_
 cs = plt.contour(x_grid, y_grid, outdat, contour_fdm, colors='r')  # plot the contours of constant fdm(rhoc, rhocdm)
 # plt.scatter(x, y, marker='.', s=3)  # overlay the rhoc-rhocdm scatter points for comparison
 
-# plt.xlabel('rho_c [g/cm^3]')
-# plt.ylabel('rho_c^DM [g/cm^3]')
+plt.xlabel('rho_c [g/cm^3]')
+plt.ylabel('rho_c^DM [g/cm^3]')
 
-# # Save the plot as an image file
-# plt.savefig('plot.png')
+# Save the plot as an image file
+plt.savefig('plot.png')
 
 
 contours = []

@@ -131,7 +131,7 @@ for eosname in eosnames:
 
 
 # to associate the dark matter fraction to each point in rhoc-rhocdm space, interpolate 3D (rhoc,rhocdm,fdm) data to get a function fdm(rhoc,rhocdm)
-x = properties[:, headers.index('R')]  # Input data from 'R' column
+x = properties[:, headers.index('rhoc')]  # Input data from 'rhoc' column
 y = properties[:, headers.index('rhocdm')]  # Input data from 'rhocdm' column
 z = properties[:, headers.index('fdm')]  # Input data from 'fdm' column
 

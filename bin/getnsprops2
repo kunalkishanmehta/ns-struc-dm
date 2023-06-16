@@ -207,7 +207,7 @@ for i in range(num_cs+3):
 	print('i=', i)
 	newrhocslist, newrhocdmlist = find_rhos(i)
 
-	newproperties = np.zeros((len(newrhocslist), numprops+4))
+	newproperties = np.zeros((len(newrhocslist)+len(newrhocdmlist), numprops+4))
 	j = 0
 	for rhoc in newrhocslist: # compute macroscopic properties for star of each central density
 		for rhocdm in newrhocdmlist:

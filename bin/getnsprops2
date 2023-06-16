@@ -126,7 +126,7 @@ for eosname in eosnames:
 # 	properties2 = pd.DataFrame(properties, columns = header)
 	
 	headers = ('rhoc,rhocdm,'+','.join(props) + ',Mg,fdm').split(',')
-	properties[headers.index('rhoc')]
+	#properties[headers.index('rhoc')]
 		   
 
 

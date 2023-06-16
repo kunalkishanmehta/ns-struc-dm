@@ -138,8 +138,9 @@ z = properties[:, headers.index('fdm')]  # Input data from 'fdm' column
 X = np.linspace(0.1e14,3.1e15,1000) # the grid where we'll evaluate fdm(rhoc,rhocdm)
 Y = np.linspace(0.1e14,3.1e15,1000)
 x_grid, y_grid = np.meshgrid(X, Y)
-
-print(z.shape, z)
+print( x.min(), x.max(), x)
+print(y.min(), y.max(), y)
+print(z.min(), z.max(), z)
 
 outdat = scipy.interpolate.griddata((x,y),z,(x_grid,y_grid),'linear') #, rescale=True
 #  # fdm evaluated on the grid, with one of three methods: nearest, linear, cubic

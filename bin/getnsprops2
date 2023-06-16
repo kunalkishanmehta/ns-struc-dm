@@ -206,11 +206,13 @@ dict_properties = {}
 for i in range(num_cs+3):
 	print('i=', i)
 	newrhocslist, newrhocdmlist = find_rhos(i)
+	print('rhoclist=',  newrhocslist)
+	print('rhocdmlist=',newrhocdmlist)
 
 	newproperties = np.zeros((len(newrhocslist), numprops+4))
 	for rhoc in newrhocslist: # compute macroscopic properties for star of each central density
 		for rhocdm in newrhocdmlist:
-			print(rhoc, rhocdm)
+			
 			macro = tov([mu,P,cs2i,Rho],float(rhoc), float(rhocdm), props,stp,numpts,maxr,tol)
 			newproperties[i] = [item for List in [[rhoc],[rhocdm],macro] for item in List] + [macro[props.index('Mdm')]+macro[props.index('M')],macro[props.index('Md')]/(macro[props.index('Mb')]+macro[props.index('Md')])]      
 			i = i+1

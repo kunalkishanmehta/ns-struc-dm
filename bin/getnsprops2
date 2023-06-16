@@ -328,9 +328,71 @@ def find_max(file):
   R, M, rho_c, rho_cdm = file['R'][l], file['Mg'][l], file['rhoc'][l], file['rhocdm'][l]
   return R,M, rho_c, rho_cdm
 
+for i in range(num_cs+3):
+	print('i=', i)
+	newrhocslist, newrhocdmlist = find_rhos(i)
+
+	newproperties = np.zeros((len(newrhocslist), numprops+4))
+	for rhoc in newrhocslist: # compute macroscopic properties for star of each central density
+		for rhocdm in newrhocdmlist:
+			macro = tov([mu,P,cs2i,Rho],rhoc, rhocdm, props,stp,numpts,maxr,tol)
+			newproperties[i] = [item for List in [[rhoc],[rhocdm],macro] for item in List] + [macro[props.index('Mdm')]+macro[props.index('M')],macro[props.index('Md')]/(macro[props.index('Mb')]+macro[props.index('Md')])]      
+			i = i+1
+	dict_properties[contour_mb[i]] = newproperties
+
+contours_dm = []
+for i in range(num_cs+1):
+  try: c = cs_dm.allsegs[i][0] # if a contour was plotted, save it
+  except: continue
+  contours_dm += [c] # list that stores all the extracted contours
+
+for c_dm in contours_dm: plt.plot(c_dm[:,0],c_dm[:,1],color='g') # plot the extracted contours
+
+plt.scatter(dat['rhoc'],dat['rhocdm'],marker='.',s=3,c='k') # overlay scatter points
+
+plt.xlabel('rho_c [g/cm^3]')
+plt.ylabel('rho_c^DM [g/cm^3]')
 
 
+# downsample the contours to get a list of (rhoc,rhocdm) coordinates to use to generate a constant-fdm sequence of stars
 
+num_stars = 100 # how many stars to aim for in the sequence
+rhocs, rhocdms = [], []
+
+for c in contours_dm:
+  
+  skip = int(len(c[:,0])/num_stars)
+  rhocs += [c[::skip,0]]
+  rhocdms += [c[::skip,1]] # downselect to num_stars (rhoc,rhocdm) points
+
+
+rhomin = 2.8e14 # because some central densities are too small to give physical neutron stars, throw out those below rhomin
+rhomax = 12*rhomin # because some central densities are too large to give physical neutron stars, throw out those above rhomax
+rhocs_out, rhocdms_out = [], []
+
+for c,cdm in zip(rhocs,rhocdms):
+  c_out, cdm_out = [], []
+
+  for rhoc,rhocdm in zip(c,cdm):
+    
+    if (rhoc >= rhomin or rhocdm >= rhomin) and rhoc <= rhomax and rhocdm <=rhomax: # one of rhoc/rhocdm below rhomin is ok, to allow pure regular matter or pure dm star
+      c_out += [rhoc]
+      cdm_out += [rhocdm]
+  rhocs_out += [c_out]
+  rhocdms_out += [cdm_out]
+
+#run the TOV solver on the constant md curves
+for i in range(num_cs+3):
+	print('i=', i)
+	newrhocslist, newrhocdmlist = find_rhos(i)
+
+	newproperties = np.zeros((len(newrhocslist), numprops+4))
+	for rhoc in newrhocslist: # compute macroscopic properties for star of each central density
+		for rhocdm in newrhocdmlist:
+			macro = tov([mu,P,cs2i,Rho],rhoc, rhocdm, props,stp,numpts,maxr,tol)
+			newproperties[i] = [item for List in [[rhoc],[rhocdm],macro] for item in List] + [macro[props.index('Mdm')]+macro[props.index('M')],macro[props.index('Md')]/(macro[props.index('Mb')]+macro[props.index('Md')])]      
+			i = i+1
+	dict_properties[contour_md[i]] = newproperties
 
 
 

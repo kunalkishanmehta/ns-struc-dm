@@ -141,7 +141,7 @@ x_grid, y_grid = np.meshgrid(X, Y)
 
 print(z.shape, z)
 
-outdat = scipy.interpolate.griddata((x,y),z,(x_grid,y_grid),'linear', rescale = True) #, rescale=True
+outdat = scipy.interpolate.griddata((x,y),z,(x_grid,y_grid),'linear') #, rescale=True
 #  # fdm evaluated on the grid, with one of three methods: nearest, linear, cubic
 
 num_cs = 9

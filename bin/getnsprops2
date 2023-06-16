@@ -221,6 +221,119 @@ for i in range(num_cs+3):
 			i = i+1
 	dict_properties[contour_fdm[i]] = newproperties
 
+
+# to associate the (dark) baryon mass to each point in rhoc-rhocdm space, interpolate 3D (rhoc,rhocdm,Mb) data to get a function Mb(rhoc,rhocdm)
+
+x = properties[:, headers.index('R')]  # Input data from 'R' column
+y = properties[:, headers.index('rhocdm')]  # Input data from 'rhocdm' column
+z = properties[:, headers.index('Mb')]  # Input data from 'Mb' column
+zdm = properties[:, headers.index('Md')]  # Input data from 'Md' column
+
+X = np.linspace(0.1e14,3.1e15,1000) # the grid where we'll evaluate Mb(rhoc,rhocdm)
+Y = np.linspace(0.1e14,3.1e15,1000)
+x_grid, y_grid = np.meshgrid(X, Y)
+
+outdat = scipy.interpolate.griddata((x,y),z,(x_grid,y_grid),'linear') # Mb evaluated on the grid, with one of three methods: nearest, linear, cubic
+outdat_dm = scipy.interpolate.griddata((x,y),zdm,(x_grid,y_grid),'linear') # Md evaluated on the grid
+
+# plot the interpolated Mb and Md functions
+
+plt.pcolormesh(x_grid,y_grid,outdat,cmap='gray_r') # show Mb(rhoc,rhocdm) as a color map (darker = larger Mb)
+#plt.pcolormesh(x_grid,y_grid,outdat,cmap='gray_r') # show Md(rhoc,rhocdm) as a color map (darker = larger Mb) -- but can't seem to show two colormaps at once
+
+num_cs = 11
+cs = plt.contour(x_grid,y_grid,outdat,list(np.linspace(1.,3.,num_cs)),colors='r') # plot the contours of constant Mb(rhoc,rhocdm)
+cs_dm = plt.contour(x_grid,y_grid,outdat_dm,list(np.linspace(1.,3.,num_cs)),colors='g') # plot the contours of constant Md(rhoc,rhocdm)
+
+# extract the (rhoc,rhocdm) coordinates of the constant-fdm contours
+
+contours = []
+for i in range(num_cs+3):
+  try: c = cs.allsegs[i][0] # if a contour was plotted, save it
+  except: continue
+  contours += [c] # list that stores all the extracted contours
+
+# downsample the contours to get a list of (rhoc,rhocdm) coordinates to use to generate a constant-fdm sequence of stars
+
+num_stars = 100 # how many stars to aim for in the sequence
+rhocs, rhocdms = [], []
+
+for c in contours:
+  
+  skip = int(len(c[:,0])/num_stars)
+  rhocs += [c[::skip,0]]
+  rhocdms += [c[::skip,1]] # downselect to num_stars (rhoc,rhocdm) points
+
+
+rhomin = 2.8e14 # because some central densities are too small to give physical neutron stars, throw out those below rhomin
+rhomax = 12*rhomin # because some central densities are too large to give physical neutron stars, throw out those above rhomax
+rhocs_out, rhocdms_out = [], []
+
+for c,cdm in zip(rhocs,rhocdms):
+  c_out, cdm_out = [], []
+
+  for rhoc,rhocdm in zip(c,cdm):
+    
+    if (rhoc >= rhomin or rhocdm >= rhomin) and rhoc <= rhomax and rhocdm <=rhomax: # one of rhoc/rhocdm below rhomin is ok, to allow pure regular matter or pure dm star
+      c_out += [rhoc]
+      cdm_out += [rhocdm]
+  rhocs_out += [c_out]
+  rhocdms_out += [cdm_out]
+
+# plot the interpolated Mb and Md functions
+
+plt.pcolormesh(x_grid,y_grid,outdat,cmap='gray_r') # show Mb(rhoc,rhocdm) as a color map (darker = larger Mb)
+#plt.pcolormesh(x_grid,y_grid,outdat,cmap='gray_r') # show Md(rhoc,rhocdm) as a color map (darker = larger Mb) -- but can't seem to show two colormaps at once
+
+num_cs = 11
+# cs = plt.contour(x_grid,y_grid,outdat,list(np.linspace(1.,3.,num_cs)),colors='r') # plot the contours of constant Mb(rhoc,rhocdm)
+cs_dm = plt.contour(x_grid,y_grid,outdat_dm,list(np.linspace(1.,3.,num_cs)),colors='g') # plot the contours of constant Md(rhoc,rhocdm)
+
+contours_dm = []
+for i in range(num_cs+1):
+  try: c = cs_dm.allsegs[i][0] # if a contour was plotted, save it
+  except: continue
+  contours_dm += [c] # list that stores all the extracted contours
+
+# downsample the contours to get a list of (rhoc,rhocdm) coordinates to use to generate a constant-fdm sequence of stars
+
+num_stars = 100 # how many stars to aim for in the sequence
+rhocs, rhocdms = [], []
+
+for c in contours_dm:
+  
+  skip = int(len(c[:,0])/num_stars)
+  rhocs += [c[::skip,0]]
+  rhocdms += [c[::skip,1]] # downselect to num_stars (rhoc,rhocdm) points
+
+
+rhomin = 2.8e14 # because some central densities are too small to give physical neutron stars, throw out those below rhomin
+rhomax = 12*rhomin # because some central densities are too large to give physical neutron stars, throw out those above rhomax
+rhocs_out, rhocdms_out = [], []
+
+for c,cdm in zip(rhocs,rhocdms):
+  c_out, cdm_out = [], []
+
+  for rhoc,rhocdm in zip(c,cdm):
+    
+    if (rhoc >= rhomin or rhocdm >= rhomin) and rhoc <= rhomax and rhocdm <=rhomax: # one of rhoc/rhocdm below rhomin is ok, to allow pure regular matter or pure dm star
+      c_out += [rhoc]
+      cdm_out += [rhocdm]
+  rhocs_out += [c_out]
+  rhocdms_out += [cdm_out]
+
+
+def find_max(file):
+  l = np.argmax((file['Mg']))
+  R, M, rho_c, rho_cdm = file['R'][l], file['Mg'][l], file['rhoc'][l], file['rhocdm'][l]
+  return R,M, rho_c, rho_cdm
+
+
+
+
+
+
+
 		
 hf = h5py.File('dict_properties.h5', 'w')
 hf.create_dataset('dataset_prop', data=dict_properties)

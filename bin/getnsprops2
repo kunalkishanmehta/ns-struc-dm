@@ -149,11 +149,6 @@ contour_fdm = list(np.geomspace(1e-2, 0.1, 2)) + list(np.linspace(0.1, 0.9, num_
 cs = plt.contour(x_grid, y_grid, outdat, contour_fdm, colors='r')  # plot the contours of constant fdm(rhoc, rhocdm)
 # plt.scatter(x, y, marker='.', s=3)  # overlay the rhoc-rhocdm scatter points for comparison
 
-# Count the number of contour lines for cs
-num_contour_lines = 0
-for collection in cs.collections:
-    num_contour_lines += len(collection.get_paths())
-print("Number of contour lines (cs):", num_contour_lines)
 
 plt.xlabel('rho_c [g/cm^3]')
 plt.ylabel('rho_c^DM [g/cm^3]')
@@ -209,7 +204,7 @@ dict_properties = {}
 
 
 
-for i in range(num_contour_lines):
+for i in range(len(contours)):
 	print('i=', i)
 	newrhocslist, newrhocdmlist = find_rhos(i)
 
@@ -222,21 +217,6 @@ for i in range(num_contour_lines):
 		j = j+1
 	dict_properties[contour_fdm[i]] = newproperties
 
-# Change the file name or location
-file_path = '/content/dict_properties.h5'
-
-# Check if the file exists and delete it if necessary
-if os.path.exists(file_path):
-    os.remove(file_path)
-
-# Create the h5py file
-hf = h5py.File(file_path, 'w')
-hf.create_dataset('dataset_prop', data=dict_properties)
-hf.close()
-
-# Print a message confirming the dataset creation and file path
-print('Dataset created successfully!')
-print('Dataset saved to:', file_path)
 
 
 

@@ -203,7 +203,7 @@ dict_properties = {}
 
 
 
-for i in range(num_cs+3):
+for i in range(num_cs+2):
 	print('i=', i)
 	newrhocslist, newrhocdmlist = find_rhos(i)
 

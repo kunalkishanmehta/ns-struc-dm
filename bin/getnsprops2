@@ -216,11 +216,16 @@ for i in range(num_cs+2):
 		j = j+1
 	dict_properties[contour_fdm[i]] = newproperties
 
-hf = h5py.File('dict_properties.h5', 'w')
-hf.create_dataset('dataset_prop', data=dict_properties)
-hf.close()
+# Save the dictionary to an h5py file
+with h5py.File('dict_properties.h5', 'w') as hf:
+    hf.create_dataset('dataset_prop', data=dict_properties)
+
 # Print a message confirming the dataset creation and file path
 print('Dataset created successfully!')
 print('Dataset saved to: dict_properties.h5')
+
+
+
+
 
 

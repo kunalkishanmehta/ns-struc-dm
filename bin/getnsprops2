@@ -209,12 +209,11 @@ for i in range(num_cs+3):
 
 	newproperties = np.zeros((len(newrhocslist)*len(newrhocdmlist), numprops+4))
 	j = 0
-	for rhoc in newrhocslist: # compute macroscopic properties for star of each central density
-		for rhocdm in newrhocdmlist:
+	for rhoc,rhocdm in zip(newrhocslist,newrhocdmlist):
 			
-			macro = tov([mu,P,cs2i,Rho],rhoc, rhocdm, props,stp,numpts,maxr,tol)
-			newproperties[j] = [item for List in [[rhoc],[rhocdm],macro] for item in List] + [macro[props.index('Mdm')]+macro[props.index('M')],macro[props.index('Md')]/(macro[props.index('Mb')]+macro[props.index('Md')])]      
-			j = j+1
+		macro = tov([mu,P,cs2i,Rho],rhoc, rhocdm, props,stp,numpts,maxr,tol)
+		newproperties[j] = [item for List in [[rhoc],[rhocdm],macro] for item in List] + [macro[props.index('Mdm')]+macro[props.index('M')],macro[props.index('Md')]/(macro[props.index('Mb')]+macro[props.index('Md')])]      
+		j = j+1
 	dict_properties[contour_fdm[i]] = newproperties
 
 

@@ -149,6 +149,12 @@ contour_fdm = list(np.geomspace(1e-2, 0.1, 2)) + list(np.linspace(0.1, 0.9, num_
 cs = plt.contour(x_grid, y_grid, outdat, contour_fdm, colors='r')  # plot the contours of constant fdm(rhoc, rhocdm)
 # plt.scatter(x, y, marker='.', s=3)  # overlay the rhoc-rhocdm scatter points for comparison
 
+# Count the number of contour lines for cs
+num_contour_lines = 0
+for collection in cs.collections:
+    num_contour_lines += len(collection.get_paths())
+print("Number of contour lines (cs):", num_contour_lines)
+
 plt.xlabel('rho_c [g/cm^3]')
 plt.ylabel('rho_c^DM [g/cm^3]')
 
@@ -203,7 +209,7 @@ dict_properties = {}
 
 
 
-for i in range(num_cs+2):
+for i in range(num_contour_lines):
 	print('i=', i)
 	newrhocslist, newrhocdmlist = find_rhos(i)
 

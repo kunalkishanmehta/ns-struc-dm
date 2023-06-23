@@ -294,6 +294,7 @@ for i in range(len(contours)):
 	newrhocslist, newrhocdmlist = find_rhos(i)
 
 	newproperties = np.zeros((len(newrhocslist), numprops+4))
+	j=0
 	for rhoc,rhocdm in zip(newrhocslist,newrhocdmlist):		
 		macro = tov([mu,P,cs2i,Rho],rhoc, rhocdm, props,stp,numpts,maxr,tol)
 		newproperties[j] = [item for List in [[rhoc],[rhocdm],macro] for item in List] + [macro[props.index('Mdm')]+macro[props.index('M')],macro[props.index('Md')]/(macro[props.index('Mb')]+macro[props.index('Md')])]      
@@ -362,6 +363,7 @@ for i in range(len(contours_dm)):
 	newrhocslist, newrhocdmlist = find_rhos(i)
 
 	newproperties = np.zeros((len(newrhocslist), numprops+4))
+	j=0
 	for rhoc,rhocdm in zip(newrhocslist,newrhocdmlist):
 			
 		macro = tov([mu,P,cs2i,Rho],rhoc, rhocdm, props,stp,numpts,maxr,tol)

@@ -220,7 +220,7 @@ for i in range(len(contours)):
 
 # to associate the (dark) baryon mass to each point in rhoc-rhocdm space, interpolate 3D (rhoc,rhocdm,Mb) data to get a function Mb(rhoc,rhocdm)
 
-x = properties[:, headers.index('R')]  # Input data from 'R' column
+x = properties[:, headers.index('rhoc')]  # Input data from 'R' column
 y = properties[:, headers.index('rhocdm')]  # Input data from 'rhocdm' column
 z = properties[:, headers.index('Mb')]  # Input data from 'Mb' column
 zdm = properties[:, headers.index('Md')]  # Input data from 'Md' column

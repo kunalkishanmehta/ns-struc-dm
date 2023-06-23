@@ -144,7 +144,7 @@ outdat = scipy.interpolate.griddata((x,y),z,(x_grid,y_grid),'linear') #, rescale
 #  # fdm evaluated on the grid, with one of three methods: nearest, linear, cubic
 
 num_cs = 9
-contour_fdm = list(np.geomspace(1e-2, 0.1, 2)) + list(np.linspace(0.1, 0.9, num_cs)[1:]) + list(reversed(1. - np.geomspace(1e-2, 0.1, 2)[:-1]))
+
 
 cs = plt.contour(x_grid, y_grid, outdat, contour_fdm, colors='r')  # plot the contours of constant fdm(rhoc, rhocdm)
 # plt.scatter(x, y, marker='.', s=3)  # overlay the rhoc-rhocdm scatter points for comparison
@@ -202,7 +202,7 @@ def find_rhos(n):
 
 dict_properties = {}
 
-
+contour_fdm = list(np.geomspace(1e-2, 0.1, 2)) + list(np.linspace(0.1, 0.9, len(contours)[1:]) + list(reversed(1. - np.geomspace(1e-2, 0.1, 2)[:-1]))
 
 for i in range(len(contours)):
 	print('i=', i)
@@ -288,6 +288,7 @@ for c,cdm in zip(rhocs,rhocdms):
 plt.pcolormesh(x_grid,y_grid,outdat,cmap='gray_r') # show Mb(rhoc,rhocdm) as a color map (darker = larger Mb)
 #plt.pcolormesh(x_grid,y_grid,outdat,cmap='gray_r') # show Md(rhoc,rhocdm) as a color map (darker = larger Mb) -- but can't seem to show two colormaps at once
 
+contour_mb = list(np.geomspace(1e-2, 0.1, 2)) + list(np.linspace(0.1, 0.9, len(contours)[1:]) + list(reversed(1. - np.geomspace(1e-2, 0.1, 2)[:-1]))                                                     
 
 for i in range(len(contours)):
 	print('i=', i)
@@ -357,6 +358,7 @@ for c,cdm in zip(rhocs,rhocdms):
   rhocs_out += [c_out]
   rhocdms_out += [cdm_out]
 
+contour_md = list(np.geomspace(1e-2, 0.1, 2)) + list(np.linspace(0.1, 0.9, len(contours_dm)[1:]) + list(reversed(1. - np.geomspace(1e-2, 0.1, 2)[:-1]))                                                 
 #run the TOV solver on the constant md curves
 for i in range(len(contours_dm)):
 	print('i=', i)
@@ -385,4 +387,3 @@ hf.close()
 # Print a message confirming the dataset creation and file path
 print('Dataset created successfully!')
 print('Dataset saved to:', file_path)
-

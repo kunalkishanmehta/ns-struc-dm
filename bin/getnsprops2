@@ -217,7 +217,7 @@ for i in range(len(contours)):
 		j = j+1
 	dict_properties['contour_fdm'] = newproperties
 
-dict_properties['contour_fdm']
+print(dict_properties['contour_fdm'])
 # 
 # 
 # 

@@ -412,17 +412,102 @@ for i in range(len(contours_dm)):
 
 print('Printing the dictionary with all the contours')
 print(dict_properties.keys())
-print(dict_properties)
+# print(dict_properties)
 
-# Change the file name or location
-file_path = '/content/dict_properties.h5'
+# # Change the file name or location
+# file_path = '/content/dict_properties.h5'
 
 
-# Create the h5py file
-hf = h5py.File(file_path, 'w')
-hf.create_dataset('dataset_prop', data=dict_properties)
-hf.close()
+# # Create the h5py file
+# hf = h5py.File(file_path, 'w')
+# hf.create_dataset('dataset_prop', data=dict_properties)
+# hf.close()
 
-# Print a message confirming the dataset creation and file path
-print('Dataset created successfully!')
-print('Dataset saved to:', file_path)
+# # Print a message confirming the dataset creation and file path
+# print('Dataset created successfully!')
+# print('Dataset saved to:', file_path)
+
+
+stable_md = []
+
+
+for i in range(len(dict_properties['contour_md'])):
+	stable_md.append(find_max(dict_properties['contour_md'][i]))
+ 
+
+stable_mb = []
+
+for i in range(len(dict_properties['contour_mb'])):
+	stable_md.append(find_max(dict_properties['contour_mb'][i]))
+
+
+stable = stable_mb + stable_md
+stable_sort = np.sort(stable, axis = 0)
+
+
+xdata = np.array([x[0] for x in stable])
+ydata = np.array([x[1] for x in stable])
+x,y = zip(*sorted(zip(xdata,ydata),key=lambda xdata: xdata[0]))
+
+
+
+# stable_line = np.polyfit(x,y,8)
+x1,y1 = np.array(list(x)), np.array(list(y))
+x2,y2 = x1.tolist(), y1.tolist()
+xnew = np.linspace(0,20, 60, endpoint = True)
+xnew2 =np.linspace(5.4,10.3, 60, endpoint = True)
+
+
+def func(x, a, b,c,d,e):
+    return a*np.power(x,4) + b*np.power(x,3) + c*np.power(x,2) + d*x + e
+popt, pcov = curve_fit(func, x1, y1)
+func(x1, *popt)
+
+def func_new(x, a,b,c,d,e):
+
+  return np.piecewise(x, [x < min(x1), (x>= min(x1)) & (x< 1.1*max(x1)), x >= 1.1*max(x1)], [2.5,lambda x: func(x,a,b,c,d,e), 2.5])
+
+
+
+def stable_crop(file,col,frac, a,b,c,d,e):
+  stable_curves = []
+  boolean_array = file['Mg'] < func_new(file['R'],a,b,c,d,e)
+  # print(boolean_array)
+  boolean_new = []
+  boolean_element = boolean_array[0]
+  # print(boolean_array)
+  i=0
+  while boolean_element == True and i<len(boolean_array):
+    boolean_element = boolean_array[i]
+    boolean_new.append(boolean_element)
+    i=i+1
+  while i < len(boolean_array):
+    boolean_new.append(False)
+    i = i+1
+  boolean_array = boolean_new
+  # print(boolean_array)
+
+  for i in range(len(boolean_array)):
+
+    if boolean_array[i] == True:
+      R,M = file['R'][i], file['Mg'][i]
+      stable_curves.append((R,M))
+      plt.plot(file['R'][i], file['Mg'][i],lw=1, marker = '.', c = col,label = '{}%'.format(frac) if i == 0 else "" )
+
+    elif boolean_array[i] == False:
+      R,M = file['R'][i], file['Mg'][i]
+      # print(R, M, func(file['R'][i],a,b,c,d,e))
+
+
+    # if file['M'] < func(file['R'], a,b,c,d,e):
+    #   plt.scatter(file['R'], file['Mg'],marker='.',s=3, c = 'b' )
+    # else:
+    #   plt.scatter(file['R'], file['Mg'],marker='.',s=3, c = 'r' )
+
+
+  return stable_curves
+
+
+plt.scatter([ x[0] for x in stable], [ x[1] for x in stable])
+plt.plot(xnew, func_new(xnew, *popt), 'r-')
+plt.savefig('maxlines.png')

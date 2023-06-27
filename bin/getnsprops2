@@ -444,9 +444,9 @@ json_data = pd.Series(nested_dict).to_json(orient='values')
 # Specify the file path where you want to save the JSON data
 file_path = '/content/dict_properties.json'
 
-# Open the file in write mode and save the JSON data
+# Save the nested dictionary as a JSON file
 with open(file_path, "w") as file:
-    file.write(json_data)
+    json.dump(nested_dict, file)
 
 
 

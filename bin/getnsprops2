@@ -217,6 +217,12 @@ for i in range(len(contours)):
 		j = j+1
 	dict_properties[contour_fdm[i]] = newproperties
 
+# 
+# 
+# 
+# 
+# 
+# 
 
 # to associate the (dark) baryon mass to each point in rhoc-rhocdm space, interpolate 3D (rhoc,rhocdm,Mb) data to get a function Mb(rhoc,rhocdm)
 
@@ -317,6 +323,35 @@ def find_max(file):
 
 
 
+# to associate the (dark) baryon mass to each point in rhoc-rhocdm space, interpolate 3D (rhoc,rhocdm,Mb) data to get a function Mb(rhoc,rhocdm)
+
+x = dat['rhoc'] # input data
+y = dat['rhocdm']
+z = dat['Mb']
+zdm = dat['Md']
+
+X = np.linspace(0.1e14,3.1e15,1000) # the grid where we'll evaluate Mb(rhoc,rhocdm)
+Y = np.linspace(0.1e14,3.1e15,1000)
+x_grid, y_grid = np.meshgrid(X, Y)
+
+
+outdat_dm = scipy.interpolate.griddata((x,y),zdm,(x_grid,y_grid),'linear') # Md evaluated on the grid
+
+
+plt.pcolormesh(x_grid,y_grid,outdat,cmap='gray_r') # show Mb(rhoc,rhocdm) as a color map (darker = larger Mb)
+#plt.pcolormesh(x_grid,y_grid,outdat,cmap='gray_r') # show Md(rhoc,rhocdm) as a color map (darker = larger Mb) -- but can't seem to show two colormaps at once
+
+num_cs = 11
+
+cs_dm = plt.contour(x_grid,y_grid,outdat_dm,list(np.linspace(1.,3.,num_cs)),colors='g') # plot the contours of constant Md(rhoc,rhocdm)
+
+# Count the number of contour lines for cs_dm
+num_contour_lines_dm = 0
+for collection in cs_dm.collections:
+    num_contour_lines_dm += len(collection.get_paths())
+
+
+
 contours_dm = []
 for i in range(num_cs+1):
   try: c = cs_dm.allsegs[i][0] # if a contour was plotted, save it
@@ -359,6 +394,9 @@ for c,cdm in zip(rhocs,rhocdms):
   rhocdms_out += [cdm_out]
 
 contour_md = list(np.geomspace(1e-2, 0.1, 2)) + list(np.linspace(0.1, 0.9, len(contours_dm))[1:]) + list(reversed(1. - np.geomspace(1e-2, 0.1, 2)[:-1]))                                                 
+
+print(contours_dm)
+
 #run the TOV solver on the constant md curves
 for i in range(len(contours_dm)):
 	print('loop 3 i=', i)

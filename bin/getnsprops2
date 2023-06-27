@@ -215,7 +215,7 @@ for i in range(len(contours)):
 		macro = tov([mu,P,cs2i,Rho],rhoc, rhocdm, props,stp,numpts,maxr,tol)
 		newproperties[j] = [item for List in [[rhoc],[rhocdm],macro] for item in List] + [macro[props.index('Mdm')]+macro[props.index('M')],macro[props.index('Md')]/(macro[props.index('Mb')]+macro[props.index('Md')])]      
 		j = j+1
-	dict_properties[contour_fdm[i]] = newproperties
+	dict_properties['contour_fdm'] = newproperties
 
 # 
 # 
@@ -306,7 +306,7 @@ for i in range(len(contours)):
 		macro = tov([mu,P,cs2i,Rho],rhoc, rhocdm, props,stp,numpts,maxr,tol)
 		newproperties[j] = [item for List in [[rhoc],[rhocdm],macro] for item in List] + [macro[props.index('Mdm')]+macro[props.index('M')],macro[props.index('Md')]/(macro[props.index('Mb')]+macro[props.index('Md')])]      
 		j = j+1
-	dict_properties[contour_mb[i]] = newproperties
+	dict_properties['contour_mb'] = newproperties
 
 
 
@@ -395,7 +395,6 @@ for c,cdm in zip(rhocs,rhocdms):
 
 contour_md = list(np.geomspace(1e-2, 0.1, 2)) + list(np.linspace(0.1, 0.9, len(contours_dm))[1:]) + list(reversed(1. - np.geomspace(1e-2, 0.1, 2)[:-1]))                                                 
 
-print(contours_dm)
 
 #run the TOV solver on the constant md curves
 for i in range(len(contours_dm)):
@@ -409,10 +408,11 @@ for i in range(len(contours_dm)):
 		macro = tov([mu,P,cs2i,Rho],rhoc, rhocdm, props,stp,numpts,maxr,tol)
 		newproperties[j] = [item for List in [[rhoc],[rhocdm],macro] for item in List] + [macro[props.index('Mdm')]+macro[props.index('M')],macro[props.index('Md')]/(macro[props.index('Mb')]+macro[props.index('Md')])]      
 		j = j+1
-	dict_properties[contour_md[i]] = newproperties
+	dict_properties['contour_md'] = newproperties
 
 print('Printing the dictionary with all the contours')
 print(dict_properties.keys())
+print(dict_properties)
 
 # Change the file name or location
 file_path = '/content/dict_properties.h5'

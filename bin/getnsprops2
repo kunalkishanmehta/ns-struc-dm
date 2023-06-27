@@ -433,11 +433,22 @@ print(dict_properties['contour_md'].keys())
 # print('Dataset created successfully!')
 # print('Dataset saved to:', file_path)
 
+df = pd.DataFrame(dict_properties)
+
+# Convert DataFrame to a nested dictionary
+nested_dict = df.to_dict(orient='records')
+
+# Convert nested dictionary to JSON
+json_data = pd.Series(nested_dict).to_json(orient='values')
+
+# Specify the file path where you want to save the JSON data
+file_path = '/content/dict_properties.json'
+
+# Open the file in write mode and save the JSON data
+with open(file_path, "w") as file:
+    file.write(json_data)
 
 
-# Save dictionary to a JSON file
-with open('dict_properties.json', 'w') as file:
-    json.dump(dict_properties, file)
 
 
 # stable_md = []

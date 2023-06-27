@@ -16,7 +16,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import h5py
-# import pandas as pd
+import pandas as pd
 # from nsstruc.pltsetup import *
 
 
@@ -215,8 +215,11 @@ for i in range(len(contours)):
 		macro = tov([mu,P,cs2i,Rho],rhoc, rhocdm, props,stp,numpts,maxr,tol)
 		newproperties[j] = [item for List in [[rhoc],[rhocdm],macro] for item in List] + [macro[props.index('Mdm')]+macro[props.index('M')],macro[props.index('Md')]/(macro[props.index('Mb')]+macro[props.index('Md')])]      
 		j = j+1
-	dict_properties['contour_fdm'] = newproperties
+	dict_properties['contour_fdm'] = pd.DataFrame(newproperties, columns=headers)
 
+
+print(dict_properties['contour_fdm'].keys())
+print(dict_properties.keys())
 print(dict_properties['contour_fdm'])
 # 
 # 

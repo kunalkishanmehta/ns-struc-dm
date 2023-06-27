@@ -218,9 +218,7 @@ for i in range(len(contours)):
 	dict_properties['contour_fdm'] = pd.DataFrame(newproperties, columns=headers)
 
 
-print(dict_properties['contour_fdm'].keys())
-print(dict_properties.keys())
-print(dict_properties['contour_fdm'])
+
 # 
 # 
 # 
@@ -416,6 +414,9 @@ for i in range(len(contours_dm)):
 
 print('Printing the dictionary with all the contours')
 print(dict_properties.keys())
+print(dict_properties['contour_fdm'].keys())
+
+print(dict_properties['contour_md'].keys())
 # print(dict_properties)
 
 # # Change the file name or location

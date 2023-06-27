@@ -374,7 +374,7 @@ for i in range(len(contours_dm)):
 	dict_properties[contour_md[i]] = newproperties
 
 print('Printing the dictionary with all the contours')
-print(dict_properties)
+print(dict_properties.keys())
 
 # Change the file name or location
 file_path = '/content/dict_properties.h5'

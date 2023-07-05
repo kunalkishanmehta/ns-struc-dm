@@ -433,7 +433,7 @@ print(dict_properties['contour_md'].keys())
 # print('Dataset created successfully!')
 # print('Dataset saved to:', file_path)
 
-index = list(dict_properties.keys())
+index = list(enumerate(dict_properties.keys()))
 
 df = pd.DataFrame(dict_properties)
 

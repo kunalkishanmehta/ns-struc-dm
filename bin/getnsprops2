@@ -216,7 +216,7 @@ for i in range(len(contours)):
 	newproperties = np.zeros((len(newrhocslist)*len(newrhocdmlist), numprops+4))
 	j = 0
 	for rhoc,rhocdm in zip(newrhocslist,newrhocdmlist):
-		print('j'=j)	
+		print('j=', j)	
 		macro = tov([mu,P,cs2i,Rho],rhoc, rhocdm, props,stp,numpts,maxr,tol)
 		newproperties[j] = [item for List in [[rhoc],[rhocdm],macro] for item in List] + [macro[props.index('Mdm')]+macro[props.index('M')],macro[props.index('Md')]/(macro[props.index('Mb')]+macro[props.index('Md')])]      
 		j = j+1

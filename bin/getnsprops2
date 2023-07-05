@@ -18,6 +18,10 @@ import matplotlib.pyplot as plt
 import h5py
 import pandas as pd
 import json
+import pickle
+import marshal
+import gc
+import hdfdict
 # from nsstruc.pltsetup import *
 
 
@@ -506,7 +510,10 @@ def recursively_load_dict_contents_from_group( h5file, path):
 
 
 
-save_dict_to_hdf5(dict_properties,'test.hdf5')
+# save_dict_to_hdf5(dict_properties,'test.hdf5')
+with open('filename.pickle', 'wb') as handle:
+    pickle.dump(dict_properties, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
 
 
 

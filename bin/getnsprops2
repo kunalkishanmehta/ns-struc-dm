@@ -435,8 +435,11 @@ print(dict_properties['contour_md'].keys())
 
 df = pd.DataFrame(dict_properties)
 
+index = dict_properties.keys()
+
+
 # Convert DataFrame to a nested dictionary
-nested_dict = df.to_dict(orient='records')
+nested_dict = df.to_dict(orient='records', index = index)
 
 # Convert nested dictionary to JSON
 json_data = pd.Series(nested_dict).to_json(orient='values')

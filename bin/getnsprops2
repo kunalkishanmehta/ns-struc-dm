@@ -259,6 +259,8 @@ plt.ylabel('rho_c^DM [g/cm^3]')
 # Save the plot as an image file
 plt.savefig('plot_md.png')
 
+plt.close()
+
 # Count the number of contour lines for cs
 num_contour_lines = 0
 for collection in cs.collections:
@@ -361,6 +363,8 @@ plt.ylabel('rho_c^DM [g/cm^3]')
 
 # Save the plot as an image file
 plt.savefig('plot_mb.png')
+
+plt.close()
 
 # Count the number of contour lines for cs_dm
 num_contour_lines_dm = 0

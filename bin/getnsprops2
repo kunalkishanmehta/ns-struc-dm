@@ -155,11 +155,11 @@ cs = plt.contour(x_grid,y_grid,outdat,list(np.geomspace(1e-2,0.1,2))+list(np.lin
 # plt.scatter(x, y, marker='.', s=3)  # overlay the rhoc-rhocdm scatter points for comparison
 
 
-plt.xlabel('rho_c [g/cm^3]')
-plt.ylabel('rho_c^DM [g/cm^3]')
+# plt.xlabel('rho_c [g/cm^3]')
+# plt.ylabel('rho_c^DM [g/cm^3]')
 
-# Save the plot as an image file
-plt.savefig('plot_fdm.png')
+# # Save the plot as an image file
+# plt.savefig('plot_fdm.png')
 
 
 contours = []
@@ -253,13 +253,13 @@ num_cs = 11
 cs = plt.contour(x_grid,y_grid,outdat,list(np.linspace(1.,3.,num_cs)),colors='r') # plot the contours of constant Mb(rhoc,rhocdm)
 # cs_dm = plt.contour(x_grid,y_grid,outdat_dm,list(np.linspace(1.,3.,num_cs)),colors='g') # plot the contours of constant Md(rhoc,rhocdm)
 
-plt.xlabel('rho_c [g/cm^3]')
-plt.ylabel('rho_c^DM [g/cm^3]')
+# plt.xlabel('rho_c [g/cm^3]')
+# plt.ylabel('rho_c^DM [g/cm^3]')
 
-# Save the plot as an image file
-plt.savefig('plot_md.png')
+# # Save the plot as an image file
+# plt.savefig('plot_md.png')
 
-plt.close()
+# plt.close()
 
 # Count the number of contour lines for cs
 num_contour_lines = 0

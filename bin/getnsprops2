@@ -160,7 +160,7 @@ cs = plt.contour(x_grid,y_grid,outdat,list(np.geomspace(1e-2,0.1,2))+list(np.lin
 
 # # Save the plot as an image file
 # plt.savefig('plot_fdm.png')
-
+plt.close()
 
 contours = []
 for i in range(num_cs+3):
@@ -259,7 +259,7 @@ cs = plt.contour(x_grid,y_grid,outdat,list(np.linspace(1.,3.,num_cs)),colors='r'
 # # Save the plot as an image file
 # plt.savefig('plot_md.png')
 
-# plt.close()
+plt.close()
 
 # Count the number of contour lines for cs
 num_contour_lines = 0

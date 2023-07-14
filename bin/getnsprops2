@@ -441,89 +441,8 @@ print(dict_properties.keys())
 print(dict_properties['contour_fdm'].keys())
 
 print(dict_properties['contour_md'].keys())
-# print(dict_properties)
-
-# # Change the file name or location
-# file_path = '/content/dict_properties.h5'
 
 
-# # Create the h5py file
-# hf = h5py.File(file_path, 'w')
-# hf.create_dataset('dataset_prop', data=dict_properties)
-# hf.close()
-
-# # Print a message confirming the dataset creation and file path
-# print('Dataset created successfully!')
-# print('Dataset saved to:', file_path)
-
-
-#
-#
-#
-def save_dict_to_hdf5(dic, filename):
-
-    with h5py.File(filename, 'w') as h5file:
-        recursively_save_dict_contents_to_group(h5file, '/', dic)
-
-def load_dict_from_hdf5(filename):
-
-    with h5py.File(filename, 'r') as h5file:
-        return recursively_load_dict_contents_from_group(h5file, '/')
-
-
-
-def recursively_save_dict_contents_to_group( h5file, path, dic):
-
-    # argument type checking
-    if not isinstance(dic, dict):
-        raise ValueError("must provide a dictionary")
-
-    if not isinstance(path, str):
-        raise ValueError("path must be a string")
-    if not isinstance(h5file, h5py._hl.files.File):
-        raise ValueError("must be an open h5py file")
-    # save items to the hdf5 file
-    for key, item in dic.items():
-        #print(key,item)
-        key = str(key)
-        if isinstance(item, list):
-            item = np.array(item)
-            #print(item)
-        if not isinstance(key, str):
-            raise ValueError("dict keys must be strings to save to hdf5")
-        # save strings, numpy.int64, and numpy.float64 types
-        if isinstance(item, (np.int64, np.float64, str, np.float, float, np.float32,int)):
-            #print( 'here' )
-            h5file[path + key] = item
-            if not h5file[path + key].value == item:
-                raise ValueError('The data representation in the HDF5 file does not match the original dict.')
-        # save numpy arrays
-        elif isinstance(item, np.ndarray):
-            try:
-                h5file[path + key] = item
-            except:
-                item = np.array(item).astype('|S9')
-                h5file[path + key] = item
-            if not np.array_equal(h5file[path + key].value, item):
-                raise ValueError('The data representation in the HDF5 file does not match the original dict.')
-        # save dictionaries
-        elif isinstance(item, dict):
-            recursively_save_dict_contents_to_group(h5file, path + key + '/', item)
-        # other types cannot be saved and will result in an error
-        else:
-            #print(item)
-            raise ValueError('Cannot save %s type.' % type(item))
-
-def recursively_load_dict_contents_from_group( h5file, path):
-
-    ans = {}
-    for key, item in h5file[path].items():
-        if isinstance(item, h5py._hl.dataset.Dataset):
-            ans[key] = item.value
-        elif isinstance(item, h5py._hl.group.Group):
-            ans[key] = recursively_load_dict_contents_from_group(h5file, path + key + '/')
-    return ans
-#
 #
 #
 
@@ -538,113 +457,107 @@ with open(file_path, 'wb') as handle:
 
 
 
+def find_max(file):
+  l = np.argmax((file['Mg']))
+  R, M, rho_c, rho_cdm = file['R'][l], file['Mg'][l], file['rhoc'][l], file['rhocdm'][l]
+  return R,M, rho_c, rho_cdm
+
+stable_md = []
+
+
+for i in range(len(dict_properties['contour_md'])):
+  stable_md.append(find_max(dict_properties['contour_md'][str(i+1)]))
+
+
+stable_mb = []
+
+for i in range(len(dict_properties['contour_mb'])):
+	stable_md.append(find_max(dict_properties['contour_mb'][str(i+1)]))
+
+
+stable = stable_mb + stable_md
+stable_sort = np.sort(stable, axis = 0)
+
+
+xdata = np.array([x[0] for x in stable])
+ydata = np.array([x[1] for x in stable])
+x,y = zip(*sorted(zip(xdata,ydata),key=lambda xdata: xdata[0]))
+
+
+
+# stable_line = np.polyfit(x,y,8)
+x1,y1 = np.array(list(x)), np.array(list(y))
+x2,y2 = x1.tolist(), y1.tolist()
+xnew = np.linspace(0,20, 60, endpoint = True)
+xnew2 =np.linspace(5.4,10.3, 60, endpoint = True)
+
+
+def func(x, a, b,c,d,e):
+    return a*np.power(x,4) + b*np.power(x,3) + c*np.power(x,2) + d*x + e
+popt, pcov = curve_fit(func, x1, y1)
+func(x1, *popt)
+
+def func_new(x, a,b,c,d,e):
+
+  return np.piecewise(x, [x < min(x1), (x>= min(x1)) & (x< 1.1*max(x1)), x >= 1.1*max(x1)], [2.5,lambda x: func(x,a,b,c,d,e), 2.5])
+
+
+
+def stable_crop(file, col, frac, a, b, c, d, e):
+    stable_curves = []
+    boolean_array = file['Mg'].to_numpy() < func_new(file['R'].to_numpy(), a, b, c, d, e)
+    boolean_new = []
+    boolean_element = boolean_array[0]
+    i = 0
+    while boolean_element == True and i < len(boolean_array):
+        boolean_element = boolean_array[i]
+        boolean_new.append(boolean_element)
+        i = i + 1
+    while i < len(boolean_array):
+        boolean_new.append(False)
+        i = i + 1
+    boolean_array = boolean_new
+
+    for i in range(len(boolean_array)):
+        if boolean_array[i] == True:
+            R, M = file['R'].iloc[i], file['Mg'].iloc[i]
+            stable_curves.append((R, M))
+            plt.plot(file['R'].iloc[i], file['Mg'].iloc[i], lw=1, marker='.', c=col, label='{}%'.format(frac) if i == 0 else "")
+        elif boolean_array[i] == False:
+            R, M = file['R'].iloc[i], file['Mg'].iloc[i]
+
+    return stable_curves
+
+
+plt.scatter([ x[0] for x in stable], [ x[1] for x in stable])
+plt.plot(xnew, func_new(xnew, *popt), 'r-')
+plt.savefig('maxlines.png')
 
 
 
 
-# index = list(enumerate(dict_properties.keys()))
-
-# df = pd.DataFrame(dict_properties)
-
-
-
-
-# # Convert DataFrame to a nested dictionary
-# nested_dict = df.to_dict(orient='records', index = index)
-
-# # Convert nested dictionary to JSON
-# json_data = pd.Series(nested_dict).to_json(orient='values')
-
-# # Specify the file path where you want to save the JSON data
-# file_path = '/content/dict_properties.json'
-
-# # Save the nested dictionary as a JSON file
-# with open(file_path, "w") as file:
-#     json.dump(nested_dict, file)
+data_con_sly = [dict_properties['contour_fdm']['2'], dict_properties['contour_fdm']['3'], dict_properties['contour_fdm']['4'], dict_properties['contour_fdm']['5'], dict_properties['contour_fdm']['6'], dict_properties['contour_fdm']['7'], dict_properties['contour_fdm']['8'], dict_properties['contour_fdm']['9'], dict_properties['contour_fdm']['10']]
+data_frac = [10, 20, 30, 40, 50, 60, 70, 80, 90]
+data_colours = ['b', 'orange', 'y', 'c', 'm', 'indigo', 'pink', 'lime', 'brown']
 
 
 
+plt.figure(figsize=(11, 7))
+stable_m_r = []
+plt.plot(properties[:, headers.index('R')][100:1583:48], properties[:, headers.index('Mg')][100:1583:48], label='0 %', color='k', marker='.')
+for i, j, k in zip(data_con_sly, data_frac, data_colours):
+    stable_m_r.append(np.array(stable_crop(i, k, j, *popt)))
 
-# stable_md = []
+plt.xlabel(r'$R$ [km]', size=20)
+plt.ylabel(r'$M+M_{DM}$ [$M_\odot$]', size=20)
 
+plt.plot(xnew2, func(xnew2, *popt), 'r-', label='Stability curve', lw=3)
 
-# for i in range(len(dict_properties['contour_md'])):
-# 	stable_md.append(find_max(dict_properties['contour_md']))
+plt.scatter(properties[:, headers.index('R')], properties[:, headers.index('Mg')], marker='.', s=2, c='k', alpha=0.6)
 
-
-# stable_mb = []
-
-# for i in range(len(dict_properties['contour_mb'])):
-# 	stable_md.append(find_max(dict_properties['contour_mb']))
-
-
-# stable = stable_mb + stable_md
-# stable_sort = np.sort(stable, axis = 0)
-
-
-# xdata = np.array([x[0] for x in stable])
-# ydata = np.array([x[1] for x in stable])
-# x,y = zip(*sorted(zip(xdata,ydata),key=lambda xdata: xdata[0]))
-
-
-
-# # stable_line = np.polyfit(x,y,8)
-# x1,y1 = np.array(list(x)), np.array(list(y))
-# x2,y2 = x1.tolist(), y1.tolist()
-# xnew = np.linspace(0,20, 60, endpoint = True)
-# xnew2 =np.linspace(5.4,10.3, 60, endpoint = True)
-
-
-# def func(x, a, b,c,d,e):
-#     return a*np.power(x,4) + b*np.power(x,3) + c*np.power(x,2) + d*x + e
-# popt, pcov = curve_fit(func, x1, y1)
-# func(x1, *popt)
-
-# def func_new(x, a,b,c,d,e):
-
-#   return np.piecewise(x, [x < min(x1), (x>= min(x1)) & (x< 1.1*max(x1)), x >= 1.1*max(x1)], [2.5,lambda x: func(x,a,b,c,d,e), 2.5])
-
-
-
-# def stable_crop(file,col,frac, a,b,c,d,e):
-#   stable_curves = []
-#   boolean_array = file['Mg'] < func_new(file['R'],a,b,c,d,e)
-#   # print(boolean_array)
-#   boolean_new = []
-#   boolean_element = boolean_array[0]
-#   # print(boolean_array)
-#   i=0
-#   while boolean_element == True and i<len(boolean_array):
-#     boolean_element = boolean_array[i]
-#     boolean_new.append(boolean_element)
-#     i=i+1
-#   while i < len(boolean_array):
-#     boolean_new.append(False)
-#     i = i+1
-#   boolean_array = boolean_new
-#   # print(boolean_array)
-
-#   for i in range(len(boolean_array)):
-
-#     if boolean_array[i] == True:
-#       R,M = file['R'][i], file['Mg'][i]
-#       stable_curves.append((R,M))
-#       plt.plot(file['R'][i], file['Mg'][i],lw=1, marker = '.', c = col,label = '{}%'.format(frac) if i == 0 else "" )
-
-#     elif boolean_array[i] == False:
-#       R,M = file['R'][i], file['Mg'][i]
-#       # print(R, M, func(file['R'][i],a,b,c,d,e))
-
-
-#     # if file['M'] < func(file['R'], a,b,c,d,e):
-#     #   plt.scatter(file['R'], file['Mg'],marker='.',s=3, c = 'b' )
-#     # else:
-#     #   plt.scatter(file['R'], file['Mg'],marker='.',s=3, c = 'r' )
-
-
-#   return stable_curves
-
-
-# plt.scatter([ x[0] for x in stable], [ x[1] for x in stable])
-# plt.plot(xnew, func_new(xnew, *popt), 'r-')
-# plt.savefig('maxlines.png')
+plt.xticks(fontsize=20)
+plt.yticks(fontsize=20)
+plt.legend(bbox_to_anchor=(1, 1), fontsize=16, title='DM fraction', title_fontsize=20)
+plt.xlim(2, 15)
+plt.ylim(0.12, 2.1)
+plt.savefig('stability cropped curves.png')

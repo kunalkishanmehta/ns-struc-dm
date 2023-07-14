@@ -333,9 +333,8 @@ for i in range(len(contours)):
 
 
 
-
 def find_max(file):
-  l = np.argmax((file['Mg']))
+  l = file['Mg'].idxmax()
   R, M, rho_c, rho_cdm = file['R'][l], file['Mg'][l], file['rhoc'][l], file['rhocdm'][l]
   return R,M, rho_c, rho_cdm
 
@@ -457,10 +456,6 @@ with open(file_path, 'wb') as handle:
 
 
 
-def find_max(file):
-  l = np.argmax((file['Mg']))
-  R, M, rho_c, rho_cdm = file['R'][l], file['Mg'][l], file['rhoc'][l], file['rhocdm'][l]
-  return R,M, rho_c, rho_cdm
 
 stable_md = []
 

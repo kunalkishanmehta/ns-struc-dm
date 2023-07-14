@@ -552,7 +552,7 @@ plt.scatter(properties[:, headers.index('R')], properties[:, headers.index('Mg')
 
 plt.xticks(fontsize=20)
 plt.yticks(fontsize=20)
-plt.legend(bbox_to_anchor=(1, 1), fontsize=16, title='DM fraction', title_fontsize=20)
+plt.legend(bbox_to_anchor=(1, 1), fontsize=16, title='DM fraction')
 plt.xlim(2, 15)
 plt.ylim(0.12, 2.1)
 plt.savefig('stability cropped curves.png')

@@ -206,6 +206,8 @@ def find_rhos(n):
   return newrhoc, newrhocdm
 
 dict_properties = {}
+dict_properties['contour_fdm'] = {}
+
 
 contour_fdm = list(np.geomspace(1e-2, 0.1, 2)) + list(np.linspace(0.1, 0.9, len(contours))[1:]) + list(reversed(1. - np.geomspace(1e-2, 0.1, 2)[:-1]))
 

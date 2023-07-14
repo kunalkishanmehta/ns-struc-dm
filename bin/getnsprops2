@@ -223,238 +223,238 @@ for i in range(len(contours)):
 
 
 
-#
-#
-#
-#
-#
-#
+# #
+# #
+# #
+# #
+# #
+# #
 
-# to associate the (dark) baryon mass to each point in rhoc-rhocdm space, interpolate 3D (rhoc,rhocdm,Mb) data to get a function Mb(rhoc,rhocdm)
+# # to associate the (dark) baryon mass to each point in rhoc-rhocdm space, interpolate 3D (rhoc,rhocdm,Mb) data to get a function Mb(rhoc,rhocdm)
 
-x = properties[:, headers.index('rhoc')]  # Input data from 'R' column
-y = properties[:, headers.index('rhocdm')]  # Input data from 'rhocdm' column
-z = properties[:, headers.index('Mb')]  # Input data from 'Mb' column
-zdm = properties[:, headers.index('Md')]  # Input data from 'Md' column
+# x = properties[:, headers.index('rhoc')]  # Input data from 'R' column
+# y = properties[:, headers.index('rhocdm')]  # Input data from 'rhocdm' column
+# z = properties[:, headers.index('Mb')]  # Input data from 'Mb' column
+# zdm = properties[:, headers.index('Md')]  # Input data from 'Md' column
 
-X = np.linspace(0.1e14,3.1e15,1000) # the grid where we'll evaluate Mb(rhoc,rhocdm)
-Y = np.linspace(0.1e14,3.1e15,1000)
-x_grid, y_grid = np.meshgrid(X, Y)
+# X = np.linspace(0.1e14,3.1e15,1000) # the grid where we'll evaluate Mb(rhoc,rhocdm)
+# Y = np.linspace(0.1e14,3.1e15,1000)
+# x_grid, y_grid = np.meshgrid(X, Y)
 
-outdat = scipy.interpolate.griddata((x,y),z,(x_grid,y_grid),'linear') # Mb evaluated on the grid, with one of three methods: nearest, linear, cubic
-outdat_dm = scipy.interpolate.griddata((x,y),zdm,(x_grid,y_grid),'linear') # Md evaluated on the grid
+# outdat = scipy.interpolate.griddata((x,y),z,(x_grid,y_grid),'linear') # Mb evaluated on the grid, with one of three methods: nearest, linear, cubic
+# outdat_dm = scipy.interpolate.griddata((x,y),zdm,(x_grid,y_grid),'linear') # Md evaluated on the grid
 
-# plot the interpolated Mb and Md functions
+# # plot the interpolated Mb and Md functions
 
-plt.pcolormesh(x_grid,y_grid,outdat,cmap='gray_r') # show Mb(rhoc,rhocdm) as a color map (darker = larger Mb)
-#plt.pcolormesh(x_grid,y_grid,outdat,cmap='gray_r') # show Md(rhoc,rhocdm) as a color map (darker = larger Mb) -- but can't seem to show two colormaps at once
+# plt.pcolormesh(x_grid,y_grid,outdat,cmap='gray_r') # show Mb(rhoc,rhocdm) as a color map (darker = larger Mb)
+# #plt.pcolormesh(x_grid,y_grid,outdat,cmap='gray_r') # show Md(rhoc,rhocdm) as a color map (darker = larger Mb) -- but can't seem to show two colormaps at once
 
-num_cs = 11
-cs = plt.contour(x_grid,y_grid,outdat,list(np.linspace(1.,3.,num_cs)),colors='r') # plot the contours of constant Mb(rhoc,rhocdm)
-# cs_dm = plt.contour(x_grid,y_grid,outdat_dm,list(np.linspace(1.,3.,num_cs)),colors='g') # plot the contours of constant Md(rhoc,rhocdm)
-
-plt.xlabel('rho_c [g/cm^3]')
-plt.ylabel('rho_c^DM [g/cm^3]')
-
-# Save the plot as an image file
-plt.savefig('plot_md.png')
-
-plt.close()
-
-# Count the number of contour lines for cs
-num_contour_lines = 0
-for collection in cs.collections:
-    num_contour_lines += len(collection.get_paths())
-
-
-# extract the (rhoc,rhocdm) coordinates of the constant-fdm contours
-
-contours = []
-for i in range(num_cs+3):
-  try: c = cs.allsegs[i][0] # if a contour was plotted, save it
-  except: continue
-  contours += [c] # list that stores all the extracted contours
-
-# downsample the contours to get a list of (rhoc,rhocdm) coordinates to use to generate a constant-fdm sequence of stars
-
-num_stars = 100 # how many stars to aim for in the sequence
-rhocs, rhocdms = [], []
-
-for c in contours:
-
-  skip = int(len(c[:,0])/num_stars)
-  rhocs += [c[::skip,0]]
-  rhocdms += [c[::skip,1]] # downselect to num_stars (rhoc,rhocdm) points
-
-
-rhomin = 2.8e14 # because some central densities are too small to give physical neutron stars, throw out those below rhomin
-rhomax = 12*rhomin # because some central densities are too large to give physical neutron stars, throw out those above rhomax
-rhocs_out, rhocdms_out = [], []
-
-for c,cdm in zip(rhocs,rhocdms):
-  c_out, cdm_out = [], []
-
-  for rhoc,rhocdm in zip(c,cdm):
-
-    if (rhoc >= rhomin or rhocdm >= rhomin) and rhoc <= rhomax and rhocdm <=rhomax: # one of rhoc/rhocdm below rhomin is ok, to allow pure regular matter or pure dm star
-      c_out += [rhoc]
-      cdm_out += [rhocdm]
-  rhocs_out += [c_out]
-  rhocdms_out += [cdm_out]
-
-# plot the interpolated Mb and Md functions
-
-plt.pcolormesh(x_grid,y_grid,outdat,cmap='gray_r') # show Mb(rhoc,rhocdm) as a color map (darker = larger Mb)
-#plt.pcolormesh(x_grid,y_grid,outdat,cmap='gray_r') # show Md(rhoc,rhocdm) as a color map (darker = larger Mb) -- but can't seem to show two colormaps at once
-
-contour_mb = list(np.geomspace(1e-2, 0.1, 2)) + list(np.linspace(0.1, 0.9, len(contours))[1:]) + list(reversed(1. - np.geomspace(1e-2, 0.1, 2)[:-1]))
-
-for i in range(len(contours)):
-	print('loop 2 i=', i)
-	newrhocslist, newrhocdmlist = find_rhos(i)
-
-	newproperties = np.zeros((len(newrhocslist), numprops+4))
-	j=0
-	for rhoc,rhocdm in zip(newrhocslist,newrhocdmlist):
-		macro = tov([mu,P,cs2i,Rho],rhoc, rhocdm, props,stp,numpts,maxr,tol)
-		newproperties[j] = [item for List in [[rhoc],[rhocdm],macro] for item in List] + [macro[props.index('Mdm')]+macro[props.index('M')],macro[props.index('Md')]/(macro[props.index('Mb')]+macro[props.index('Md')])]
-		j = j+1
-	dict_properties['contour_mb'] = pd.DataFrame(newproperties, columns=headers)
-
-
-
-
-
-
-
-
-
-def find_max(file):
-  l = np.argmax((file['Mg']))
-  R, M, rho_c, rho_cdm = file['R'][l], file['Mg'][l], file['rhoc'][l], file['rhocdm'][l]
-  return R,M, rho_c, rho_cdm
-
-
-
-# to associate the (dark) baryon mass to each point in rhoc-rhocdm space, interpolate 3D (rhoc,rhocdm,Mb) data to get a function Mb(rhoc,rhocdm)
-
-x = properties[:, headers.index('rhoc')]  # Input data from 'R' column
-y = properties[:, headers.index('rhocdm')]  # Input data from 'rhocdm' column
-z = properties[:, headers.index('Mb')]  # Input data from 'Mb' column
-zdm = properties[:, headers.index('Md')]  # Input data from 'Md' column
-
-X = np.linspace(0.1e14,3.1e15,1000) # the grid where we'll evaluate Mb(rhoc,rhocdm)
-Y = np.linspace(0.1e14,3.1e15,1000)
-x_grid, y_grid = np.meshgrid(X, Y)
-
-
-outdat_dm = scipy.interpolate.griddata((x,y),zdm,(x_grid,y_grid),'linear') # Md evaluated on the grid
-
-
-plt.pcolormesh(x_grid,y_grid,outdat,cmap='gray_r') # show Mb(rhoc,rhocdm) as a color map (darker = larger Mb)
-#plt.pcolormesh(x_grid,y_grid,outdat,cmap='gray_r') # show Md(rhoc,rhocdm) as a color map (darker = larger Mb) -- but can't seem to show two colormaps at once
-
-num_cs = 11
-
-cs_dm = plt.contour(x_grid,y_grid,outdat_dm,list(np.linspace(1.,3.,num_cs)),colors='g') # plot the contours of constant Md(rhoc,rhocdm)
+# num_cs = 11
+# cs = plt.contour(x_grid,y_grid,outdat,list(np.linspace(1.,3.,num_cs)),colors='r') # plot the contours of constant Mb(rhoc,rhocdm)
+# # cs_dm = plt.contour(x_grid,y_grid,outdat_dm,list(np.linspace(1.,3.,num_cs)),colors='g') # plot the contours of constant Md(rhoc,rhocdm)
 
 # plt.xlabel('rho_c [g/cm^3]')
 # plt.ylabel('rho_c^DM [g/cm^3]')
 
 # # Save the plot as an image file
-# plt.savefig('plot_mb.png')
+# plt.savefig('plot_md.png')
 
 # plt.close()
 
-# Count the number of contour lines for cs_dm
-num_contour_lines_dm = 0
-for collection in cs_dm.collections:
-    num_contour_lines_dm += len(collection.get_paths())
+# # Count the number of contour lines for cs
+# num_contour_lines = 0
+# for collection in cs.collections:
+#     num_contour_lines += len(collection.get_paths())
+
+
+# # extract the (rhoc,rhocdm) coordinates of the constant-fdm contours
+
+# contours = []
+# for i in range(num_cs+3):
+#   try: c = cs.allsegs[i][0] # if a contour was plotted, save it
+#   except: continue
+#   contours += [c] # list that stores all the extracted contours
+
+# # downsample the contours to get a list of (rhoc,rhocdm) coordinates to use to generate a constant-fdm sequence of stars
+
+# num_stars = 100 # how many stars to aim for in the sequence
+# rhocs, rhocdms = [], []
+
+# for c in contours:
+
+#   skip = int(len(c[:,0])/num_stars)
+#   rhocs += [c[::skip,0]]
+#   rhocdms += [c[::skip,1]] # downselect to num_stars (rhoc,rhocdm) points
+
+
+# rhomin = 2.8e14 # because some central densities are too small to give physical neutron stars, throw out those below rhomin
+# rhomax = 12*rhomin # because some central densities are too large to give physical neutron stars, throw out those above rhomax
+# rhocs_out, rhocdms_out = [], []
+
+# for c,cdm in zip(rhocs,rhocdms):
+#   c_out, cdm_out = [], []
+
+#   for rhoc,rhocdm in zip(c,cdm):
+
+#     if (rhoc >= rhomin or rhocdm >= rhomin) and rhoc <= rhomax and rhocdm <=rhomax: # one of rhoc/rhocdm below rhomin is ok, to allow pure regular matter or pure dm star
+#       c_out += [rhoc]
+#       cdm_out += [rhocdm]
+#   rhocs_out += [c_out]
+#   rhocdms_out += [cdm_out]
+
+# # plot the interpolated Mb and Md functions
+
+# plt.pcolormesh(x_grid,y_grid,outdat,cmap='gray_r') # show Mb(rhoc,rhocdm) as a color map (darker = larger Mb)
+# #plt.pcolormesh(x_grid,y_grid,outdat,cmap='gray_r') # show Md(rhoc,rhocdm) as a color map (darker = larger Mb) -- but can't seem to show two colormaps at once
+
+# contour_mb = list(np.geomspace(1e-2, 0.1, 2)) + list(np.linspace(0.1, 0.9, len(contours))[1:]) + list(reversed(1. - np.geomspace(1e-2, 0.1, 2)[:-1]))
+
+# for i in range(len(contours)):
+# 	print('loop 2 i=', i)
+# 	newrhocslist, newrhocdmlist = find_rhos(i)
+
+# 	newproperties = np.zeros((len(newrhocslist), numprops+4))
+# 	j=0
+# 	for rhoc,rhocdm in zip(newrhocslist,newrhocdmlist):
+# 		macro = tov([mu,P,cs2i,Rho],rhoc, rhocdm, props,stp,numpts,maxr,tol)
+# 		newproperties[j] = [item for List in [[rhoc],[rhocdm],macro] for item in List] + [macro[props.index('Mdm')]+macro[props.index('M')],macro[props.index('Md')]/(macro[props.index('Mb')]+macro[props.index('Md')])]
+# 		j = j+1
+# 	dict_properties['contour_mb'] = pd.DataFrame(newproperties, columns=headers)
 
 
 
-contours_dm = []
-for i in range(num_cs+1):
-  try: c = cs_dm.allsegs[i][0] # if a contour was plotted, save it
-  except: continue
-  contours_dm += [c] # list that stores all the extracted contours
-
-for c_dm in contours_dm: plt.plot(c_dm[:,0],c_dm[:,1],color='g') # plot the extracted contours
-
-# plt.scatter(dat['rhoc'],dat['rhocdm'],marker='.',s=3,c='k') # overlay scatter points
-
-# plt.xlabel('rho_c [g/cm^3]')
-# plt.ylabel('rho_c^DM [g/cm^3]')
 
 
-# downsample the contours to get a list of (rhoc,rhocdm) coordinates to use to generate a constant-fdm sequence of stars
-
-num_stars = 100 # how many stars to aim for in the sequence
-rhocs, rhocdms = [], []
-
-for c in contours_dm:
-
-  skip = int(len(c[:,0])/num_stars)
-  rhocs += [c[::skip,0]]
-  rhocdms += [c[::skip,1]] # downselect to num_stars (rhoc,rhocdm) points
 
 
-rhomin = 2.8e14 # because some central densities are too small to give physical neutron stars, throw out those below rhomin
-rhomax = 12*rhomin # because some central densities are too large to give physical neutron stars, throw out those above rhomax
-rhocs_out, rhocdms_out = [], []
-
-for c,cdm in zip(rhocs,rhocdms):
-  c_out, cdm_out = [], []
-
-  for rhoc,rhocdm in zip(c,cdm):
-
-    if (rhoc >= rhomin or rhocdm >= rhomin) and rhoc <= rhomax and rhocdm <=rhomax: # one of rhoc/rhocdm below rhomin is ok, to allow pure regular matter or pure dm star
-      c_out += [rhoc]
-      cdm_out += [rhocdm]
-  rhocs_out += [c_out]
-  rhocdms_out += [cdm_out]
-
-contour_md = list(np.geomspace(1e-2, 0.1, 2)) + list(np.linspace(0.1, 0.9, len(contours_dm))[1:]) + list(reversed(1. - np.geomspace(1e-2, 0.1, 2)[:-1]))
 
 
-#run the TOV solver on the constant md curves
-for i in range(len(contours_dm)):
-	print('loop 3 i=', i)
-	newrhocslist, newrhocdmlist = find_rhos(i)
-
-	newproperties = np.zeros((len(newrhocslist), numprops+4))
-	j=0
-	for rhoc,rhocdm in zip(newrhocslist,newrhocdmlist):
-
-		macro = tov([mu,P,cs2i,Rho],rhoc, rhocdm, props,stp,numpts,maxr,tol)
-		newproperties[j] = [item for List in [[rhoc],[rhocdm],macro] for item in List] + [macro[props.index('Mdm')]+macro[props.index('M')],macro[props.index('Md')]/(macro[props.index('Mb')]+macro[props.index('Md')])]
-		j = j+1
-	dict_properties['contour_md'] = pd.DataFrame(newproperties, columns=headers)
-
-print('Printing the dictionary with all the contours')
-print(dict_properties.keys())
-print(dict_properties['contour_fdm'].keys())
-
-print(dict_properties['contour_md'].keys())
-# print(dict_properties)
-
-# # Change the file name or location
-# file_path = '/content/dict_properties.h5'
+# def find_max(file):
+#   l = np.argmax((file['Mg']))
+#   R, M, rho_c, rho_cdm = file['R'][l], file['Mg'][l], file['rhoc'][l], file['rhocdm'][l]
+#   return R,M, rho_c, rho_cdm
 
 
-# # Create the h5py file
-# hf = h5py.File(file_path, 'w')
-# hf.create_dataset('dataset_prop', data=dict_properties)
-# hf.close()
 
-# # Print a message confirming the dataset creation and file path
-# print('Dataset created successfully!')
-# print('Dataset saved to:', file_path)
+# # to associate the (dark) baryon mass to each point in rhoc-rhocdm space, interpolate 3D (rhoc,rhocdm,Mb) data to get a function Mb(rhoc,rhocdm)
+
+# x = properties[:, headers.index('rhoc')]  # Input data from 'R' column
+# y = properties[:, headers.index('rhocdm')]  # Input data from 'rhocdm' column
+# z = properties[:, headers.index('Mb')]  # Input data from 'Mb' column
+# zdm = properties[:, headers.index('Md')]  # Input data from 'Md' column
+
+# X = np.linspace(0.1e14,3.1e15,1000) # the grid where we'll evaluate Mb(rhoc,rhocdm)
+# Y = np.linspace(0.1e14,3.1e15,1000)
+# x_grid, y_grid = np.meshgrid(X, Y)
 
 
-#
-#
-#
+# outdat_dm = scipy.interpolate.griddata((x,y),zdm,(x_grid,y_grid),'linear') # Md evaluated on the grid
+
+
+# plt.pcolormesh(x_grid,y_grid,outdat,cmap='gray_r') # show Mb(rhoc,rhocdm) as a color map (darker = larger Mb)
+# #plt.pcolormesh(x_grid,y_grid,outdat,cmap='gray_r') # show Md(rhoc,rhocdm) as a color map (darker = larger Mb) -- but can't seem to show two colormaps at once
+
+# num_cs = 11
+
+# cs_dm = plt.contour(x_grid,y_grid,outdat_dm,list(np.linspace(1.,3.,num_cs)),colors='g') # plot the contours of constant Md(rhoc,rhocdm)
+
+# # plt.xlabel('rho_c [g/cm^3]')
+# # plt.ylabel('rho_c^DM [g/cm^3]')
+
+# # # Save the plot as an image file
+# # plt.savefig('plot_mb.png')
+
+# # plt.close()
+
+# # Count the number of contour lines for cs_dm
+# num_contour_lines_dm = 0
+# for collection in cs_dm.collections:
+#     num_contour_lines_dm += len(collection.get_paths())
+
+
+
+# contours_dm = []
+# for i in range(num_cs+1):
+#   try: c = cs_dm.allsegs[i][0] # if a contour was plotted, save it
+#   except: continue
+#   contours_dm += [c] # list that stores all the extracted contours
+
+# for c_dm in contours_dm: plt.plot(c_dm[:,0],c_dm[:,1],color='g') # plot the extracted contours
+
+# # plt.scatter(dat['rhoc'],dat['rhocdm'],marker='.',s=3,c='k') # overlay scatter points
+
+# # plt.xlabel('rho_c [g/cm^3]')
+# # plt.ylabel('rho_c^DM [g/cm^3]')
+
+
+# # downsample the contours to get a list of (rhoc,rhocdm) coordinates to use to generate a constant-fdm sequence of stars
+
+# num_stars = 100 # how many stars to aim for in the sequence
+# rhocs, rhocdms = [], []
+
+# for c in contours_dm:
+
+#   skip = int(len(c[:,0])/num_stars)
+#   rhocs += [c[::skip,0]]
+#   rhocdms += [c[::skip,1]] # downselect to num_stars (rhoc,rhocdm) points
+
+
+# rhomin = 2.8e14 # because some central densities are too small to give physical neutron stars, throw out those below rhomin
+# rhomax = 12*rhomin # because some central densities are too large to give physical neutron stars, throw out those above rhomax
+# rhocs_out, rhocdms_out = [], []
+
+# for c,cdm in zip(rhocs,rhocdms):
+#   c_out, cdm_out = [], []
+
+#   for rhoc,rhocdm in zip(c,cdm):
+
+#     if (rhoc >= rhomin or rhocdm >= rhomin) and rhoc <= rhomax and rhocdm <=rhomax: # one of rhoc/rhocdm below rhomin is ok, to allow pure regular matter or pure dm star
+#       c_out += [rhoc]
+#       cdm_out += [rhocdm]
+#   rhocs_out += [c_out]
+#   rhocdms_out += [cdm_out]
+
+# contour_md = list(np.geomspace(1e-2, 0.1, 2)) + list(np.linspace(0.1, 0.9, len(contours_dm))[1:]) + list(reversed(1. - np.geomspace(1e-2, 0.1, 2)[:-1]))
+
+
+# #run the TOV solver on the constant md curves
+# for i in range(len(contours_dm)):
+# 	print('loop 3 i=', i)
+# 	newrhocslist, newrhocdmlist = find_rhos(i)
+
+# 	newproperties = np.zeros((len(newrhocslist), numprops+4))
+# 	j=0
+# 	for rhoc,rhocdm in zip(newrhocslist,newrhocdmlist):
+
+# 		macro = tov([mu,P,cs2i,Rho],rhoc, rhocdm, props,stp,numpts,maxr,tol)
+# 		newproperties[j] = [item for List in [[rhoc],[rhocdm],macro] for item in List] + [macro[props.index('Mdm')]+macro[props.index('M')],macro[props.index('Md')]/(macro[props.index('Mb')]+macro[props.index('Md')])]
+# 		j = j+1
+# 	dict_properties['contour_md'] = pd.DataFrame(newproperties, columns=headers)
+
+# print('Printing the dictionary with all the contours')
+# print(dict_properties.keys())
+# print(dict_properties['contour_fdm'].keys())
+
+# print(dict_properties['contour_md'].keys())
+# # print(dict_properties)
+
+# # # Change the file name or location
+# # file_path = '/content/dict_properties.h5'
+
+
+# # # Create the h5py file
+# # hf = h5py.File(file_path, 'w')
+# # hf.create_dataset('dataset_prop', data=dict_properties)
+# # hf.close()
+
+# # # Print a message confirming the dataset creation and file path
+# # print('Dataset created successfully!')
+# # print('Dataset saved to:', file_path)
+
+
+# #
+# #
+# #
 def save_dict_to_hdf5(dic, filename):
 
     with h5py.File(filename, 'w') as h5file:

@@ -532,7 +532,8 @@ plt.close()
 
 
 data_con_sly = [dict_properties['contour_fdm']['1'], dict_properties['contour_fdm']['2'], dict_properties['contour_fdm']['3'], dict_properties['contour_fdm']['4'], dict_properties['contour_fdm']['5'], dict_properties['contour_fdm']['6'], dict_properties['contour_fdm']['7'], dict_properties['contour_fdm']['8'], dict_properties['contour_fdm']['9'], dict_properties['contour_fdm']['10']]
-data_frac = [1, 10, 20, 30, 40, 50, 60, 70, 80, 90]
+data_frac =  [f'{int(cs * 100)}%' for cs in cs_list]
+
 data_colours = ['green' ,'b', 'orange', 'y', 'c', 'm', 'indigo', 'pink', 'lime', 'brown']
 
 
@@ -540,8 +541,8 @@ data_colours = ['green' ,'b', 'orange', 'y', 'c', 'm', 'indigo', 'pink', 'lime',
 plt.figure(figsize=(11, 7))
 stable_m_r = []
 # plt.plot(properties[:, headers.index('R')][100:1583:48], properties[:, headers.index('Mg')][100:1583:48], label='0 %', color='k', marker='.')
-for i, j, k in zip(data_con_sly, data_frac, data_colours):
-    stable_m_r.append(np.array(stable_crop(i, k, j, *popt)))
+for i, j, k in zip(data_con_sly, data_frac):
+    stable_m_r.append(np.array(stable_crop(i, None, j, *popt)))
 
 plt.xlabel(r'$R$ [km]', size=20)
 plt.ylabel(r'$M+M_{DM}$ [$M_\odot$]', size=20)

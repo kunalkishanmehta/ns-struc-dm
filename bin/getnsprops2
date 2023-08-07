@@ -541,7 +541,7 @@ data_colours = ['green' ,'b', 'orange', 'y', 'c', 'm', 'indigo', 'pink', 'lime',
 plt.figure(figsize=(11, 7))
 stable_m_r = []
 # plt.plot(properties[:, headers.index('R')][100:1583:48], properties[:, headers.index('Mg')][100:1583:48], label='0 %', color='k', marker='.')
-for i, j, k in zip(data_con_sly, data_frac):
+for i, j in zip(data_con_sly, data_frac):
     stable_m_r.append(np.array(stable_crop(i, None, j, *popt)))
 
 plt.xlabel(r'$R$ [km]', size=20)

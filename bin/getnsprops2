@@ -532,7 +532,7 @@ plt.close()
 
 
 data_con_sly = [dict_properties['contour_fdm']['1'], dict_properties['contour_fdm']['2'], dict_properties['contour_fdm']['3'], dict_properties['contour_fdm']['4'], dict_properties['contour_fdm']['5'], dict_properties['contour_fdm']['6'], dict_properties['contour_fdm']['7'], dict_properties['contour_fdm']['8'], dict_properties['contour_fdm']['9'], dict_properties['contour_fdm']['10']]
-data_frac =  [f'{int(cs * 100)}%' for cs in cs_list]
+data_frac =  [{int(cs * 100)}% for cs in cs_list]
 
 data_colours = ['green' ,'b', 'orange', 'y', 'c', 'm', 'indigo', 'pink', 'lime', 'brown']
 

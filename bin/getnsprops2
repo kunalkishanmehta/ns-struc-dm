@@ -148,9 +148,10 @@ x_grid, y_grid = np.meshgrid(X, Y)
 outdat = scipy.interpolate.griddata((x,y),z,(x_grid,y_grid),'linear') #, rescale=True
 #  # fdm evaluated on the grid, with one of three methods: nearest, linear, cubic
 
-num_cs = 9
+num_cs = 22
 
-cs_list = list(np.linspace(0.01,0.1,num_cs+1))+list(np.linspace(0.1,0.35,6)[1:])
+# cs_list = list(np.linspace(0.01,0.1,num_cs+1))+list(np.linspace(0.1,0.35,6)[1:])
+cs_list = [0]+[round(x, 4) for x in np.geomspace(0.001, 0.35, 22)]
 cs = plt.contour(x_grid,y_grid,outdat,cs_list,colors='r') # plot the contours of constant fdm(rhoc,rhocdm)
 # plt.scatter(x, y, marker='.', s=3)  # overlay the rhoc-rhocdm scatter points for comparison
 
@@ -163,7 +164,7 @@ cs = plt.contour(x_grid,y_grid,outdat,cs_list,colors='r') # plot the contours of
 plt.close()
 
 contours = []
-for i in range(num_cs+9):
+for i in range(num_cs+2):
   try: c = cs.allsegs[i][0] # if a contour was plotted, save it
   except: continue
   contours += [c] # list that stores all the extracted contours
@@ -537,7 +538,8 @@ data_con_sly = [dict_properties['contour_fdm'][str(i)] for i in range(1, len(dic
 
 
 
-data_frac = [int(cs * 100) for cs in cs_list]
+# data_frac = [int(cs * 100) for cs in cs_list]
+data_frac = [round(cs * 100, 2) for cs in cs_list]
 
 # data_colours = ['green', 'b', 'orange', 'y', 'c', 'm', 'indigo', 'pink', 'lime', 'brown', 'purple', 'teal', 'gold', 'steelblue', 'violet']
 

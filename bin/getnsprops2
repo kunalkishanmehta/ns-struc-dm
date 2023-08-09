@@ -151,7 +151,7 @@ outdat = scipy.interpolate.griddata((x,y),z,(x_grid,y_grid),'linear') #, rescale
 num_cs = 22
 
 # cs_list = list(np.linspace(0.01,0.1,num_cs+1))+list(np.linspace(0.1,0.35,6)[1:])
-cs_list = [0]+[round(x, 4) for x in np.geomspace(0.001, 0.35, 22)]
+cs_list = [round(x, 4) for x in np.geomspace(0.001, 0.35, 22)]
 cs = plt.contour(x_grid,y_grid,outdat,cs_list,colors='r') # plot the contours of constant fdm(rhoc,rhocdm)
 # plt.scatter(x, y, marker='.', s=3)  # overlay the rhoc-rhocdm scatter points for comparison
 

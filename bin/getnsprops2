@@ -155,7 +155,7 @@ cs_list = [0]+[round(x, 4) for x in np.geomspace(0.001, 0.35, 22)]
 cs = plt.contour(x_grid,y_grid,outdat,cs_list,colors='r') # plot the contours of constant fdm(rhoc,rhocdm)
 # plt.scatter(x, y, marker='.', s=3)  # overlay the rhoc-rhocdm scatter points for comparison
 
-
+data_frac = [round(cs * 100, 2) for cs in cs_list]
 # plt.xlabel('rho_c [g/cm^3]')
 # plt.ylabel('rho_c^DM [g/cm^3]')
 
@@ -164,7 +164,7 @@ cs = plt.contour(x_grid,y_grid,outdat,cs_list,colors='r') # plot the contours of
 plt.close()
 
 contours = []
-for i in range(num_cs+2):
+for i in range(num_cs+3):
   try: c = cs.allsegs[i][0] # if a contour was plotted, save it
   except: continue
   contours += [c] # list that stores all the extracted contours
@@ -213,6 +213,7 @@ dict_properties['contour_md'] = {}
 
 
 contour_fdm = list(np.geomspace(1e-2, 0.1, 2)) + list(np.linspace(0.1, 0.9, len(contours))[1:]) + list(reversed(1. - np.geomspace(1e-2, 0.1, 2)[:-1]))
+print('contours length', len(contours))
 
 for i in range(len(contours)):
     print('loop 1 i=', i)
@@ -439,8 +440,6 @@ for i in range(len(contours_dm)):
 print('Printing the dictionary with all the contours')
 print(dict_properties.keys())
 print(dict_properties['contour_fdm'].keys())
-
-print(dict_properties['contour_md'].keys())
 
 
 #

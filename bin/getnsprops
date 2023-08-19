@@ -40,7 +40,7 @@ else:
 	
 if len(rhodmrng) >2:
 	rhodmcord = [float(rho) for rho in rhodmrng]
-	print('rhodmcord = , rhodmcord)
+	print('rhodmcord =' , rhodmcord)
 else:
 	rhodmi, rhodmf = [float(rho) for rho in rhodmrng]
 numrhoc = int(float(opts.numrhoc))

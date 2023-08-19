@@ -87,7 +87,8 @@ for eosname in eosnames:
 	if len(rhodmrng) >2:
 		rhocdms = rhodmcord
 		properties = np.zeros((len(rhodmrng), numprops+4))
-		
+		print(type(rhocdms))
+		print(len(rhocdms))
 	else:
 		rhocdms = np.linspace(max(rhodmi*rhonuc,rhodat[0]),min(rhodmf*rhonuc,rhodat[-1]),numrhoc)
 		properties = np.zeros((numrhoc**2, numprops+4))

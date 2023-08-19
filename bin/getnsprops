@@ -34,7 +34,7 @@ rhodmrng = str(opts.rhodmrng).split(',')
 
 if len(rhorng) >2:
 	rhocord = [float(rho) for rho in rhorng]
-	print('rhocord = , rhocord)
+	print('rhocord = ', rhocord)
 else:
 	rhoi, rhof = [float(rho) for rho in rhorng]
 	

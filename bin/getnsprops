@@ -85,6 +85,7 @@ for eosname in eosnames:
 		properties = np.zeros((len(rhorng), numprops+4))
 		print('rhocs', type(rhocs))
 		print('len rhocs', len(rhocs))
+		print('rhocs =',rhocs)
 	else:
 		rhocs = np.linspace(max(rhoi*rhonuc,rhodat[0]),min(rhof*rhonuc,rhodat[-1]),numrhoc)
 		properties = np.zeros((numrhoc**2, numprops+4))
@@ -97,6 +98,7 @@ for eosname in eosnames:
 		properties = np.zeros((len(rhodmrng), numprops+4))
 		print(type(rhocdms))
 		print(len(rhocdms))
+		print('rhocdms =',rhocdms)
 	else:
 		rhocdms = np.linspace(max(rhodmi*rhonuc,rhodat[0]),min(rhodmf*rhonuc,rhodat[-1]),numrhoc)
 		properties = np.zeros((numrhoc**2, numprops+4))

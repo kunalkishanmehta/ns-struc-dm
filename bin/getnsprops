@@ -94,7 +94,7 @@ for eosname in eosnames:
 		print('len rhocs', len(rhocs))
 
 	if len(rhodmrng) >2:
-		rhocdms = np.array(rhodmcord)
+		rhocdms = rhodmcord
 		properties = np.zeros((len(rhodmrng), numprops+4))
 		print(type(rhocdms))
 		print(len(rhocdms))

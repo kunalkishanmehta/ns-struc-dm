@@ -37,7 +37,7 @@ if len(rhorng) >2:
 	print('rhocord = ', rhocord)
 else:
 	rhoi, rhof = [float(rho) for rho in rhorng]
-	
+	print('rhoi', rhoi, 'rhof', rhof)
 if len(rhodmrng) >2:
 	rhodmcord = [float(rho) for rho in rhodmrng]
 	print('rhodmcord =' , rhodmcord)

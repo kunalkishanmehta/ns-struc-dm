@@ -88,12 +88,16 @@ for eosname in eosnames:
 		print('rhocs', type(rhocs))
 		print('len rhocs', len(rhocs))
 		print('rhocs =',rhocs)
+		print('shape rhocs', np.shape(rhocs))
+		print('size rhocs', np.size(rhocs))
 	else:
 		rhocs = np.linspace(max(rhoi*rhonuc,rhodat[0]),min(rhof*rhonuc,rhodat[-1]),numrhoc)
 		properties = np.zeros((numrhoc**2, numprops+4))
 		print('rhocs', type(rhocs))
 		print('len rhocs', len(rhocs))
 		print('rhocs =',rhocs)
+		print('shape rhocs', np.shape(rhocs))
+		print('size rhocs', np.size(rhocs))
 
 	if len(rhodmrng) >2:
 		rhocdms = rhodmcord
@@ -101,12 +105,16 @@ for eosname in eosnames:
 		print(type(rhocdms))
 		print(len(rhocdms))
 		print('rhocdms =',rhocdms)
+		print('shape rhocdms', np.shape(rhocdms))
+		print('size rhocdms', np.size(rhocdms))
 	else:
 		rhocdms = np.linspace(max(rhodmi*rhonuc,rhodat[0]),min(rhodmf*rhonuc,rhodat[-1]),numrhoc)
 		properties = np.zeros((numrhoc**2, numprops+4))
 		print(type(rhocdms))
 		print(len(rhocdms))
     		print('rhocdms =',rhocdms)
+		print('shape rhocdms', np.shape(rhocdms))
+		print('size rhocdms', np.size(rhocdms))
     
 	i = 0
 	if verb == True: print 'Start at central density {0} g/cm^3'.format(rhocs[0])

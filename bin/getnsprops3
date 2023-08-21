@@ -34,16 +34,16 @@ rhodmrng = str(opts.rhodmrng).split(',')
 
 if len(rhorng) >2:
 	rhocord = [float(rho) for rho in rhorng]
-	print('rhocord = ', rhocord)
+	
 else:
 	rhoi, rhof = [float(rho) for rho in rhorng]
-	print('rhoi', rhoi, 'rhof', rhof)
+	
 if len(rhodmrng) >2:
 	rhodmcord = [float(rho) for rho in rhodmrng]
-	print('rhodmcord =' , rhodmcord)
+	
 else:
 	rhodmi, rhodmf = [float(rho) for rho in rhodmrng]
-	print('rhodmi', rhodmi, 'rhodmf', rhodmf)
+	
 
 numrhoc = int(float(opts.numrhoc))
 stp = float(opts.stpi)
@@ -102,19 +102,11 @@ for eosname in eosnames:
 	if len(rhodmrng) >2:
 		rhocdms = rhodmcord
 		properties = np.zeros((len(rhodmrng)**2, numprops+4))
-		print(type(rhocdms))
-		print(len(rhocdms))
-		print('rhocdms =',rhocdms)
-		print('shape rhocdms', np.shape(rhocdms))
-		print('size rhocdms', np.size(rhocdms))
+		
 	else:
 		rhocdms = np.linspace(max(rhodmi*rhonuc,rhodat[0]),min(rhodmf*rhonuc,rhodat[-1]),numrhoc)
 		properties = np.zeros((numrhoc**2, numprops+4))
-		print(type(rhocdms))
-		print(len(rhocdms))
-    		print('rhocdms =',rhocdms)
-		print('shape rhocdms', np.shape(rhocdms))
-		print('size rhocdms', np.size(rhocdms))
+		
     
 	i = 0
 	if verb == True: print 'Start at central density {0} g/cm^3'.format(rhocs[0])

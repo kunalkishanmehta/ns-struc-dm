@@ -107,7 +107,8 @@ for eosname in eosnames:
 		properties = np.zeros((numrhoc**2, numprops+4))
 		print(type(rhocdms))
 		print(len(rhocdms))
-	
+    print('rhocdms =',rhocdms)
+    
 	i = 0
 	if verb == True: print 'Start at central density {0} g/cm^3'.format(rhocs[0])
 		

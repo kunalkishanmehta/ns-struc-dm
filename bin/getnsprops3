@@ -85,19 +85,11 @@ for eosname in eosnames:
 	if len(rhorng) >2:
 		rhocs = rhocord
 		properties = np.zeros((len(rhorng)**2, numprops+4))
-		print('rhocs', type(rhocs))
-		print('len rhocs', len(rhocs))
-		print('rhocs =',rhocs)
-		print('shape rhocs', np.shape(rhocs))
-		print('size rhocs', np.size(rhocs))
+		
 	else:
 		rhocs = np.linspace(max(rhoi*rhonuc,rhodat[0]),min(rhof*rhonuc,rhodat[-1]),numrhoc)
 		properties = np.zeros((numrhoc**2, numprops+4))
-		print('rhocs', type(rhocs))
-		print('len rhocs', len(rhocs))
-		print('rhocs =',rhocs)
-		print('shape rhocs', np.shape(rhocs))
-		print('size rhocs', np.size(rhocs))
+		
 
 	if len(rhodmrng) >2:
 		rhocdms = rhodmcord

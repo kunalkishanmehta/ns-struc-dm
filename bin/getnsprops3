@@ -43,6 +43,8 @@ if len(rhodmrng) >2:
 	print('rhodmcord =' , rhodmcord)
 else:
 	rhodmi, rhodmf = [float(rho) for rho in rhodmrng]
+	print('rhodmi', rhodmi, 'rhodmf', rhodmf)
+
 numrhoc = int(float(opts.numrhoc))
 stp = float(opts.stpi)
 numpts = int(float(opts.numpts))

@@ -122,7 +122,7 @@ for eosname in eosnames:
 	
 	for rhoc in rhocs: # compute macroscopic properties for star of each central density
 		for rhocdm in rhocdms:
-            		print('rhoc','rhocdm', rhoc,  rhocdm)
+            		
         		macro = tov([mu,P,cs2i,Rho],rhoc, rhocdm, props,stp,numpts,maxr,tol)
         		properties[i] = [item for List in [[rhoc],[rhocdm],macro] for item in List] + [macro[props.index('Mdm')]+macro[props.index('M')],macro[props.index('Md')]/(macro[props.index('Mb')]+macro[props.index('Md')])]      
         		i = i+1

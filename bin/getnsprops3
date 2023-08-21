@@ -91,7 +91,6 @@ for eosname in eosnames:
 	else:
 		rhocs = np.linspace(max(rhoi*rhonuc,rhodat[0]),min(rhof*rhonuc,rhodat[-1]),numrhoc)
 		properties = np.zeros((numrhoc**2, numprops+4))
-
 		print('rhocs', type(rhocs))
 		print('len rhocs', len(rhocs))
 		print('rhocs =',rhocs)
@@ -107,7 +106,7 @@ for eosname in eosnames:
 		properties = np.zeros((numrhoc**2, numprops+4))
 		print(type(rhocdms))
 		print(len(rhocdms))
-    print('rhocdms =',rhocdms)
+    		print('rhocdms =',rhocdms)
     
 	i = 0
 	if verb == True: print 'Start at central density {0} g/cm^3'.format(rhocs[0])

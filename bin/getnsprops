@@ -82,7 +82,7 @@ for eosname in eosnames:
 	def cs2i(p): return cs2pi(p) # 1/sound speed squared
 	if len(rhorng) >2:
 		rhocs = rhocord
-		properties = np.zeros((len(rhorng), numprops+4))
+		properties = np.zeros((len(rhorng)**2, numprops+4))
 		print('rhocs', type(rhocs))
 		print('len rhocs', len(rhocs))
 		print('rhocs =',rhocs)
@@ -95,7 +95,7 @@ for eosname in eosnames:
 
 	if len(rhodmrng) >2:
 		rhocdms = rhodmcord
-		properties = np.zeros((len(rhodmrng), numprops+4))
+		properties = np.zeros((len(rhodmrng)**2, numprops+4))
 		print(type(rhocdms))
 		print(len(rhocdms))
 		print('rhocdms =',rhocdms)

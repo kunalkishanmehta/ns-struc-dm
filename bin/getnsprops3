@@ -92,6 +92,7 @@ for eosname in eosnames:
 
 		print('rhocs', type(rhocs))
 		print('len rhocs', len(rhocs))
+		print('rhocs =',rhocs)
 
 	if len(rhodmrng) >2:
 		rhocdms = rhodmcord
